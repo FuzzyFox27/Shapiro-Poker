@@ -33,11 +33,22 @@ namespace Poker_AI_Game
         //This is where all players and AI need to be instantiated
         static void PopulatePlayers()
         {
+            //Add custom amount of players
+            int NoPlayers;
+            bool validNoPlayers = false;
+            do
+            {
+                Console.Write("How many players: ");
+                string input = Console.ReadLine();
+                validNoPlayers = int.TryParse(input, out NoPlayers);
+                if (NoPlayers <= 1) validNoPlayers = false;
+            } while (!validNoPlayers);
+
             //Temp Adding player 1 and 2
-            players.Add(new Player(1, 100));
-            players.Add(new Player(2, 100));
-            players.Add(new Player(3, 100));
-            players.Add(new Player(4, 100));
+            for (int i = 1; i <= NoPlayers; i++)
+            {
+                players.Add(new Player(i, 100));
+            }
         }
         
         //Actions are taken depending on phase of game
@@ -155,7 +166,7 @@ namespace Poker_AI_Game
         static void ShowOptions(Player player)
         {
             WipeWithInfo(player);
-
+            Console.WriteLine(" The pot has {0} chips.", table.currentPot);
             string options = "Player can:"; //Create string of options available
 
             if (player.possibleActions[0])
@@ -285,8 +296,28 @@ namespace Poker_AI_Game
             else
             {
                 //Figure out winner depending on cards
+                
             }
         }
+
+        static void HandCalculate()
+        {
+            //Royal Flush
+            /*if ()
+            {
+
+            }*/
+            //Straight Flush
+            //Four of a Kind
+            //Full House
+            //Flush
+            //Straight
+            //Three of a kind
+            //Two Pair
+            //Pair
+            //High Card
+        }
+
 
         //Check the player isn't the only one with a hand left
         static bool OnlyPlayer()
