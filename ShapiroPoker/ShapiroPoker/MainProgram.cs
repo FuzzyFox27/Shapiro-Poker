@@ -325,6 +325,7 @@ namespace Poker_AI_Game
             bool HasTwoPair = false;
             bool HasThreeOfAKind = false;
             bool HasFourOfAKind = false;
+            bool HasFullHouse = false;
             List<Card> ComparisonDeck = new List<Card>();
             for (int i = 0; i < 2; i++) ComparisonDeck.Add(players[player].GetCardInHand(i));
             for (int i = 0; i < table.GetNoCardsOnTable(); i++)
@@ -350,8 +351,16 @@ namespace Poker_AI_Game
 
                 if (runningCount == 2 && HasPair == true)HasTwoPair = true;
                 else if (runningCount == 2 && HasPair == false) HasPair = true;
-                else if (runningCount == 3) HasThreeOfAKind = true;
-                else if (runningCount == 4) HasFourOfAKind = true;
+                else if (runningCount == 3)
+                {
+                    HasThreeOfAKind = true;
+                    HasPair = false;
+                }
+                else if (runningCount == 4)
+                {
+                    HasFourOfAKind = true;
+                    HasThreeOfAKind = false;
+                }
 
                 if (!Count)
                 {
@@ -363,6 +372,7 @@ namespace Poker_AI_Game
 
             }
 
+            if (HasPair && HasThreeOfAKind) HasFullHouse = true;
 
             //Royal Flush
             /*if ()
