@@ -36,5 +36,18 @@ namespace Poker_AI_Game
                 Console.WriteLine("In Position " + i + " is the " + presentOnTable[i].rank + " of " + presentOnTable[i].suit);
             }
         }
+
+
+        // Returns the number of cards on the table
+        public int GetNoCardsOnTable()
+        {
+            return presentOnTable.Count();
+        }
+
+        // Returns the card in position 'pos'
+        public Card GetCardInPosition(int pos)
+        {
+            return presentOnTable[pos];
+        }
     }
 }

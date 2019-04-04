@@ -12,3 +12,10 @@ C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug
 C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
 C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
 C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb

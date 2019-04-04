@@ -34,6 +34,11 @@ namespace Poker_AI_Game
 
         }
 
+        public int GetPlayerID()
+        {
+            return playerID;
+        }
+
         //Reset Rounds Vars
         public void RefreshPlayer()
         {

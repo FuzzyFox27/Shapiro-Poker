@@ -97,6 +97,7 @@ namespace Poker_AI_Game
             foreach (Player player in players)
             {
                 player.ReceiveHand(deck.GetCards(2));
+                
             }
         }
 
@@ -167,6 +168,10 @@ namespace Poker_AI_Game
         {
             WipeWithInfo(player);
             Console.WriteLine(" The pot has {0} chips.", table.currentPot);
+            //
+            HandCalculate(player.GetPlayerID()-1);
+            //
+
             string options = "Player can:"; //Create string of options available
 
             if (player.possibleActions[0])
@@ -179,7 +184,7 @@ namespace Poker_AI_Game
                 options += " Raise (R) ";
 
             Console.WriteLine(options);
-
+            
             TakeActionInput(player);
         }
 
@@ -300,16 +305,30 @@ namespace Poker_AI_Game
             }
         }
 
-        static void HandCalculate()
+        static void HandCalculate(int player)
         {
+          //HighCard
+            //Check player hand
+            Card highest = new Card();
+            highest = players[player].GetCardInHand(0);
+            if (highest.rank < players[player].GetCardInHand(1).rank) highest = players[player].GetCardInHand(1);
+            //Checks both cards in hand to find the highest.
+            //Check table
+            for (int i = 0; i < table.GetNoCardsOnTable(); i++)
+            {
+                if (highest.rank < table.GetCardInPosition(i).rank) highest = table.GetCardInPosition(i);
+            }
+
+            
+
             //Royal Flush
             /*if ()
             {
 
             }*/
-            //Straight Flush
+            //Straight Flush //HasStraight + HasFlush
             //Four of a Kind
-            //Full House
+            //Full House //HasPair + HasThree
             //Flush
             //Straight
             //Three of a kind
