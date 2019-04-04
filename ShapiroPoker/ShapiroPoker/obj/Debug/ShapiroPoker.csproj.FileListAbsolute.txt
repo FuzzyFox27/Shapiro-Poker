@@ -1,0 +1,7 @@
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
