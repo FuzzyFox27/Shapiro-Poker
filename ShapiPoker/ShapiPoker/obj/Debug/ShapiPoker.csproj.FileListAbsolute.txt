@@ -1,0 +1,7 @@
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
