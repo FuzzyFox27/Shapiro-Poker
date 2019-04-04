@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -167,7 +168,7 @@ namespace Poker_AI_Game
         static void ShowOptions(Player player)
         {
             WipeWithInfo(player);
-            Console.WriteLine(" The pot has {0} chips.", table.currentPot);
+            Console.WriteLine("The pot has {0} chips.", table.currentPot);
             //
             HandCalculate(player.GetPlayerID()-1);
             //
@@ -319,7 +320,49 @@ namespace Poker_AI_Game
                 if (highest.rank < table.GetCardInPosition(i).rank) highest = table.GetCardInPosition(i);
             }
 
-            
+          //Pair checker
+            bool HasPair = false;
+            bool HasTwoPair = false;
+            bool HasThreeOfAKind = false;
+            bool HasFourOfAKind = false;
+            List<Card> ComparisonDeck = new List<Card>();
+            for (int i = 0; i < 2; i++) ComparisonDeck.Add(players[player].GetCardInHand(i));
+            for (int i = 0; i < table.GetNoCardsOnTable(); i++)
+            {
+                ComparisonDeck.Add(table.GetCardInPosition(i));
+            }
+            //SORTING
+            //ComparisonDeck.;
+            //
+            ComparisonDeck.OrderBy(Card => (int) Card.rank);
+
+            bool Count = false;
+            int runningCount = 1;
+            Card runningCard = new Card();
+            runningCard = ComparisonDeck[0];
+            for (int i = 1; i < ComparisonDeck.Count; i++)
+            {
+                if (ComparisonDeck[i].rank == runningCard.rank)
+                {
+                    runningCount++;
+                    Count = true;
+                }
+
+                if (runningCount == 2 && HasPair == true)HasTwoPair = true;
+                else if (runningCount == 2 && HasPair == false) HasPair = true;
+                else if (runningCount == 3) HasThreeOfAKind = true;
+                else if (runningCount == 4) HasFourOfAKind = true;
+
+                if (!Count)
+                {
+                    runningCount = 1;
+                    runningCard = ComparisonDeck[i];
+                }
+                else Count = false;
+
+
+            }
+
 
             //Royal Flush
             /*if ()
