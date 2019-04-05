@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -324,8 +325,13 @@ namespace Poker_AI_Game
             bool HasPair = false;
             bool HasTwoPair = false;
             bool HasThreeOfAKind = false;
-            bool HasFourOfAKind = false;
+            bool HasStraight = false;
+            bool HasFlush = false;
             bool HasFullHouse = false;
+            bool HasFourOfAKind = false;
+            bool HasStraightFlush = false;
+            bool HasRoyalFlush = false;
+            
             List<Card> ComparisonDeck = new List<Card>();
             for (int i = 0; i < 2; i++) ComparisonDeck.Add(players[player].GetCardInHand(i));
             for (int i = 0; i < table.GetNoCardsOnTable(); i++)
@@ -335,12 +341,17 @@ namespace Poker_AI_Game
             //SORTING
             //ComparisonDeck.;
             //
-            ComparisonDeck.OrderBy(Card => (int) Card.rank);
+            ComparisonDeck = ComparisonDeck.OrderBy(c => (int) c.rank).ToList();
 
             bool Count = false;
             int runningCount = 1;
             Card runningCard = new Card();
             runningCard = ComparisonDeck[0];
+
+            int pairAt = -1, twoPairAt = -1, threeAt = -1, fourAt = -1;
+
+
+            //Checking for Pair combinations
             for (int i = 1; i < ComparisonDeck.Count; i++)
             {
                 if (ComparisonDeck[i].rank == runningCard.rank)
@@ -348,20 +359,6 @@ namespace Poker_AI_Game
                     runningCount++;
                     Count = true;
                 }
-
-                if (runningCount == 2 && HasPair == true)HasTwoPair = true;
-                else if (runningCount == 2 && HasPair == false) HasPair = true;
-                else if (runningCount == 3)
-                {
-                    HasThreeOfAKind = true;
-                    HasPair = false;
-                }
-                else if (runningCount == 4)
-                {
-                    HasFourOfAKind = true;
-                    HasThreeOfAKind = false;
-                }
-
                 if (!Count)
                 {
                     runningCount = 1;
@@ -369,25 +366,97 @@ namespace Poker_AI_Game
                 }
                 else Count = false;
 
+                if (runningCount == 2 && HasPair == true)
+                {
+                    HasTwoPair = true;
+                    twoPairAt = i;
+                }
+                else if (runningCount == 2 && HasPair == false)
+                {
+                    HasPair = true;
+                    pairAt = i;
+                }
+                else if (runningCount == 3)
+                {
+                    HasThreeOfAKind = true;
+                    HasPair = false;
+                    threeAt = i;
+                }
+                else if (runningCount == 4)
+                {
+                    HasFourOfAKind = true;
+                    HasThreeOfAKind = false;
+                    fourAt = i;
+                }
+            }
+            //Checking for Straight
+            
+            int straightCount = 1;
+            int flushAt = -1;
+            if (ComparisonDeck.Count >= 5)
+            {
+                runningCard = ComparisonDeck[0];
+                for (int i = 1; i < ComparisonDeck.Count; i++)
+                {
+                
+                    if (ComparisonDeck[i].rank == runningCard.rank + 1) straightCount++;
+                    else straightCount = 1;
+
+                    runningCard = ComparisonDeck[i];
+
+                    
+                    if (straightCount > 5) HasStraight = true;
+                    
+                    //USE THE INT TO WORK OUT THE 5 CARDS IN THE FINAL HAND//
+                }
+
+                int Clubs = 0, Diamonds = 0, Hearts = 0, Spades = 0;
+                for (int i = 0; i < ComparisonDeck.Count; i++)
+                {
+                    if (ComparisonDeck[i].suit == Suits.Clubs) Clubs++;
+                    else if (ComparisonDeck[i].suit == Suits.Diamonds) Diamonds++;
+                    else if (ComparisonDeck[i].suit == Suits.Hearts) Hearts++;
+                    else if (ComparisonDeck[i].suit == Suits.Spades) Spades++;
+
+                    if (Clubs >= 5 || Diamonds >= 5 || Hearts >= 5 || Spades >= 5)
+                    {
+                        HasFlush = true;
+                        flushAt = i;
+                    }
+                }
+                
 
             }
 
+            // Checking for Flush
+            /*
+            if (ComparisonDeck[i].suit == runningCard.suit) flushCount++;
+            else flushCount = 1;
+            if (flushCount > 5) HasFlush = true;
+            */
+            
+
+            
+
+            //Logical Equivalence - Hand by definition
             if (HasPair && HasThreeOfAKind) HasFullHouse = true;
-
-            //Royal Flush
-            /*if ()
+            if (HasFlush && HasStraight) HasStraightFlush = true;
+            if (HasFlush && HasStraight)
             {
+                if (ComparisonDeck[flushAt].rank == Ranks.Ace) HasRoyalFlush = true;
+            }
 
-            }*/
-            //Straight Flush //HasStraight + HasFlush
-            //Four of a Kind
-            //Full House //HasPair + HasThree
-            //Flush
-            //Straight
-            //Three of a kind
-            //Two Pair
-            //Pair
-            //High Card
+
+            if (HasRoyalFlush) Console.WriteLine("Royal Flush"); //Added
+            else if (HasStraightFlush) Console.WriteLine("Straight Flush"); //Added by logic
+            else if (HasFourOfAKind) Console.WriteLine("Four of a Kind: {0}", ComparisonDeck[fourAt].rank); //Added
+            else if (HasFullHouse) Console.WriteLine("Full House"); //Added by Logic +TESTED
+            else if (HasFlush) Console.WriteLine("Flush"); //Added
+            else if (HasStraight) Console.WriteLine("Straight"); //Added
+            else if (HasThreeOfAKind) Console.WriteLine("Three of a Kind: {0}", ComparisonDeck[threeAt].rank); // Added
+            else if (HasTwoPair) Console.WriteLine("Two Pairs of {0}s and {1}s", ComparisonDeck[pairAt].rank, ComparisonDeck[twoPairAt].rank); //Added + TESTED
+            else if (HasPair) Console.WriteLine("Pair of {0}s",ComparisonDeck[pairAt].rank); //Added + TESTED
+            else Console.WriteLine("High card: {0} of {1}",highest.rank, highest.suit); //Added + TESTES
         }
 
 
