@@ -296,18 +296,165 @@ namespace Poker_AI_Game
             if (winnerID != -1)
             {
                 //All others have folded, one winner remains
+                DeclareWinner(winnerID);
+                /*
                 Console.WriteLine("Player " + winnerID + " wins.");
                 players[(winnerID-1)].currentChips += table.currentPot;
                 Console.ReadLine();
+                */
             }
             else
             {
                 //Figure out winner depending on cards
+                //Smallest type number wins, if two same, then highest hand total wins. Aces high, suits dont matter
+                //EG 1 (RF) wins 2-10. If two 10s, take sum of card ranks. If tie, split pot n-ways.
+                List<Tuple<int, int, int[]>> playerData = new List<Tuple<int, int, int[]>>();
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].inRound)
+                    {
+                        Tuple<int,int[]> cardData = HandCalculate(i);
+                        playerData.Add(Tuple.Create(cardData.Item1, i, cardData.Item2)); //HandType, Player ID, AND HandLocation
+                    }
+                }
+
+                playerData = playerData.OrderBy(i => i.Item1).ToList();
+                if (playerData[0].Item1 < playerData[1].Item1) //There is a winner by higher value hand
+                {
+                    winnerID = playerData[0].Item2 +1;
+                    DeclareWinner(winnerID);
+                }
+                else
+                {
+                    List<Tuple<int,int>> playerScores = new List<Tuple<int, int>>(); //Translating data
+                    foreach (var p in playerData)
+                    {
+                        playerScores.Add(Tuple.Create(p.Item1,p.Item2));
+                    }
+                    playerScores = playerScores.OrderBy(i => i.Item1).ToList();
+
+                    List<int> TyingPlayers = FindTyingPlayers(playerScores);
+                    playerScores.Clear();
+                    foreach (var p in TyingPlayers)
+                    {
+                        playerScores.Add(Tuple.Create(p, playerData[p].Item1));
+                    }
+                    //GETS TYING PLAYERS
+                    //COMPARES TYING PLAYERS BASED ON HIGH CARD
+
+                    List<Tuple<int, int>> tPlayerScores = new List<Tuple<int, int>>();
+                    foreach (var p in playerScores)
+                    {
+                        tPlayerScores.Add(p);
+                    }
+                    playerScores.Clear();
+
+                    foreach (var p in tPlayerScores)
+                    {
+                        int score = HandScoreReturner(p.Item1,playerData[p.Item1].Item1,playerData[p.Item1].Item3);
+                        playerScores.Add(Tuple.Create(score,p.Item1));
+                    }
+                    /*
+                    for (int i = 0; i <= c; i++)
+                    {
+                        int score = HandScoreReturner(i, playerData[i].Item1, playerData[i].Item3);
+                        playerScores.Add(Tuple.Create(score,i));
+                    }
+                    */
+                    playerScores = playerScores.OrderByDescending(i => i.Item1).ToList();
+                    if (playerScores[0].Item1 > playerScores[1].Item1) //Is there a winner?
+                    {
+                        winnerID = playerScores[0].Item2+1;
+                        DeclareWinner(winnerID);
+                    }
+                    else //TIE
+                    {
+
+                        //FIND WINNER BY HIGH CARD
+                        Console.WriteLine("Tie.");
+
+                        TyingPlayers = FindTyingPlayers(playerScores);
+                        playerScores.Clear();
+                        foreach (var p in TyingPlayers)
+                        {
+                            int score = HandScoreReturner(p, 10, playerData[p].Item3); //Tests the current tied players for high card winner
+                            playerScores.Add(Tuple.Create(score, p));
+                        }
+
+                        playerScores = playerScores.OrderByDescending(i => i.Item1).ToList();
+                        if (playerScores[0].Item1 > playerScores[1].Item1) //If there's a winner given hand and high card
+                        {
+                            winnerID = playerScores[0].Item2 + 1;
+                            DeclareWinner(winnerID);
+                        }
+                        else //Failed to find a winner by high card. Splitting pot between winners
+                        {
+                            TyingPlayers = FindTyingPlayers(playerScores);
+                            SplitPot(TyingPlayers.ToArray());
+                        }
+
+
+                        
+                    }
+                }
+
                 
             }
         }
 
-        static void HandCalculate(int player)
+        static List<int> FindTyingPlayers(List<Tuple<int, int>> playerScores)
+        {
+            List<int> tyingPlayers = new List<int>();
+            bool tie = true;
+            int i = 0;
+            tyingPlayers.Add(playerScores[0].Item2);
+            do
+            {
+                if (playerScores[i].Item1 == playerScores[i + 1].Item1)
+                {
+                    tyingPlayers.Add(playerScores[i+1].Item2);
+                    i++;
+                    if (i == playerScores.Count - 1) tie = false;
+                }
+                else tie = false;
+            } while (tie);
+            return tyingPlayers;
+        }
+
+        static void DeclareWinner(int winnerID)
+        {
+            Console.WriteLine("Player " + winnerID + " wins.");
+            players[(winnerID-1)].currentChips += table.currentPot;
+            Console.ReadLine();
+        }
+
+        static void SplitPot(int[] winnerIDs)
+        {
+            if (table.currentPot % winnerIDs.Length == 0) //If pot can be evenly split
+            {
+                Console.WriteLine("Splitting {0} chips {1} ways",table.currentPot, winnerIDs.Length);
+                foreach (var p in winnerIDs)
+                {
+                    players[winnerID].currentChips += table.currentPot / winnerIDs.Length;
+                }
+            }
+            else
+            {
+                int remainder = table.currentPot % winnerIDs.Length;
+                Random r = new Random();
+                int extra = r.Next(winnerIDs.Length);
+                Console.WriteLine("{0} extra chips randomly assigned to player {1}",remainder, extra+1);
+                table.currentPot -= remainder;
+                foreach (var p in winnerIDs)
+                {
+                    players[p].currentChips += table.currentPot / winnerIDs.Length;
+                }
+
+                players[extra].currentChips += remainder;
+            }
+        }
+
+        static Tuple<int,int[]> HandCalculate(int player)
         {
           //HighCard
             //Check player hand
@@ -366,33 +513,39 @@ namespace Poker_AI_Game
                 }
                 else Count = false;
 
-                if (runningCount == 2 && HasPair == true)
+                if (runningCount == 2 && HasTwoPair == true)
                 {
                     HasTwoPair = true;
-                    twoPairAt = i;
+                    pairAt = twoPairAt;
+                    twoPairAt = i; //Used to calculate final hand. To include, include hand at i and i-1
+                }
+                else if (runningCount == 2 && HasPair == true)
+                {
+                    HasTwoPair = true;
+                    twoPairAt = i; //Used to calculate final hand. To include, include hand at i and i-1
                 }
                 else if (runningCount == 2 && HasPair == false)
                 {
                     HasPair = true;
-                    pairAt = i;
+                    pairAt = i; //i and i-1
                 }
                 else if (runningCount == 3)
                 {
                     HasThreeOfAKind = true;
                     HasPair = false;
-                    threeAt = i;
+                    threeAt = i; //i and i-1 and i-2
                 }
                 else if (runningCount == 4)
                 {
                     HasFourOfAKind = true;
                     HasThreeOfAKind = false;
-                    fourAt = i;
+                    fourAt = i; //i and i-1 and i-2 and i-3
                 }
             }
             //Checking for Straight
             
             int straightCount = 1;
-            int flushAt = -1;
+            int flushAt = -1, straightAt = -1;
             if (ComparisonDeck.Count >= 5)
             {
                 runningCard = ComparisonDeck[0];
@@ -404,8 +557,12 @@ namespace Poker_AI_Game
 
                     runningCard = ComparisonDeck[i];
 
-                    
-                    if (straightCount > 5) HasStraight = true;
+
+                    if (straightCount > 5)
+                    {
+                        HasStraight = true;
+                        straightAt = i;
+                    }
                     
                     //USE THE INT TO WORK OUT THE 5 CARDS IN THE FINAL HAND//
                 }
@@ -428,35 +585,133 @@ namespace Poker_AI_Game
 
             }
 
-            // Checking for Flush
-            /*
-            if (ComparisonDeck[i].suit == runningCard.suit) flushCount++;
-            else flushCount = 1;
-            if (flushCount > 5) HasFlush = true;
-            */
-            
-
-            
-
             //Logical Equivalence - Hand by definition
             if (HasPair && HasThreeOfAKind) HasFullHouse = true;
             if (HasFlush && HasStraight) HasStraightFlush = true;
-            if (HasFlush && HasStraight)
+            if (HasStraightFlush)
             {
                 if (ComparisonDeck[flushAt].rank == Ranks.Ace) HasRoyalFlush = true;
             }
 
+            int[] handLocation = new int[2];
+            int handType = 0;
+            if (HasRoyalFlush) {
+                Console.WriteLine("Royal Flush"); //Added
+                handType = 1;
+                handLocation[0] = flushAt;
+            }
+            else if (HasStraightFlush) {
+                Console.WriteLine("Straight Flush"); //Added by logic - Given both Staight and Flush work, this should also work.
+                handType = 2;
+                handLocation[0] = straightAt;
+            }
+            else if (HasFourOfAKind) {
+                Console.WriteLine("Four of a Kind: {0}", ComparisonDeck[fourAt].rank); //Added
+                handType = 3;
+                handLocation[0] = fourAt;
+            }
+            else if (HasFullHouse) {
+                Console.WriteLine("Full House"); //Added by Logic +TESTED
+                handType = 4;
+                handLocation[0] = pairAt;
+                handLocation[1] = threeAt;
+            }
+            else if (HasFlush) {
+                Console.WriteLine("Flush"); //Added + TESTED
+                handType = 5;
+                handLocation[0] = flushAt;
+            }
+            else if (HasStraight) {
+                Console.WriteLine("Straight"); //Added + TESTED
+                handType = 6;
+                handLocation[0] = straightAt;
+            }
+            else if (HasThreeOfAKind) {
+                Console.WriteLine("Three of a Kind: {0}", ComparisonDeck[threeAt].rank); // Added + TESTED
+                handType = 7;
+                handLocation[0] = threeAt;
+            }
+            else if (HasTwoPair) {
+                Console.WriteLine("Two Pairs of {0}s and {1}s", ComparisonDeck[pairAt].rank, ComparisonDeck[twoPairAt].rank); //Added + TESTED
+                handType = 8;
+                handLocation[0] = pairAt;
+                handLocation[1] = twoPairAt;
+            }
+            else if (HasPair) {
+                Console.WriteLine("Pair of {0}s",ComparisonDeck[pairAt].rank); //Added + TESTED
+                handType = 9;
+                handLocation[0] = pairAt;
+            }
+            else{
+                Console.WriteLine("High card: {0} of {1}",highest.rank, highest.suit); //Added + TESTES
+                handType = 10;
+                handLocation[0] = 7;
+            }
 
-            if (HasRoyalFlush) Console.WriteLine("Royal Flush"); //Added
-            else if (HasStraightFlush) Console.WriteLine("Straight Flush"); //Added by logic
-            else if (HasFourOfAKind) Console.WriteLine("Four of a Kind: {0}", ComparisonDeck[fourAt].rank); //Added
-            else if (HasFullHouse) Console.WriteLine("Full House"); //Added by Logic +TESTED
-            else if (HasFlush) Console.WriteLine("Flush"); //Added
-            else if (HasStraight) Console.WriteLine("Straight"); //Added
-            else if (HasThreeOfAKind) Console.WriteLine("Three of a Kind: {0}", ComparisonDeck[threeAt].rank); // Added
-            else if (HasTwoPair) Console.WriteLine("Two Pairs of {0}s and {1}s", ComparisonDeck[pairAt].rank, ComparisonDeck[twoPairAt].rank); //Added + TESTED
-            else if (HasPair) Console.WriteLine("Pair of {0}s",ComparisonDeck[pairAt].rank); //Added + TESTED
-            else Console.WriteLine("High card: {0} of {1}",highest.rank, highest.suit); //Added + TESTES
+            return Tuple.Create(handType,handLocation);
+        }
+
+        static int HandScoreReturner(int player, int handType, int[] handLocation)
+        {
+            //HAND LOCATION IS ASCENDING 
+
+
+            List<Card> ComparisonDeck = new 
+                List<Card>();
+            //List<Card> FinalDeck = new List<Card>();
+            for (int i = 0; i < 2; i++) ComparisonDeck.Add(players[player].GetCardInHand(i));
+            for (int i = 0; i < table.GetNoCardsOnTable(); i++)
+            {
+                ComparisonDeck.Add(table.GetCardInPosition(i));
+            }
+            ComparisonDeck = ComparisonDeck.OrderBy(c => (int)c.rank).ToList();
+
+            int score = 0;
+            switch (handType)
+            {
+                case 1: //Royal Flush
+                    //A tied royal flush is always split
+
+
+                    break;
+                case 2: //Straight Flush
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+                    break;
+                case 3: //Four of a Kind
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+                    break;
+                case 4: //Full House
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+                    score += (int)ComparisonDeck[handLocation[1]].rank;
+                    break;
+                case 5: //Flush
+
+                    break;
+                case 6: //Straight
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+                    break;
+                case 7: //Three of a Kind
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+                    break;
+                case 8: //Two Pair
+                    score += (int)ComparisonDeck[handLocation[0]-1].rank;
+                    score += (int)ComparisonDeck[handLocation[1]].rank;
+                    break;
+                case 9: //Pair
+                    score += (int)ComparisonDeck[handLocation[0]].rank;
+
+                    break;
+                case 10: //High Card
+                    ComparisonDeck = ComparisonDeck.OrderByDescending(c => (int)c.rank).ToList();
+                    score += (int)ComparisonDeck[0].rank;
+
+
+                    break;
+                default: break;
+            }
+
+
+            return score;
         }
 
 
