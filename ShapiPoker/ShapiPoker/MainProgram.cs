@@ -18,7 +18,6 @@ namespace Poker_AI_Game
         //Game Vars
         static bool gameActive = true;
         static int gamePhase = 0;
-        static int button = 0;
 
         //Main code chain
         static void Main(string[] args)
@@ -38,7 +37,7 @@ namespace Poker_AI_Game
                 }
                 else if (ans == 2)
                 {
-                    //Call AI Functions, Intergrate AI here, And normal game functions 
+                    //Call AI Fucntions, Intergrate AI here, And normal game functions 
                     //Unsire how to incorporate our neural network here, help appreciated 
                 }
                 else if (ans == 3)
@@ -77,7 +76,6 @@ namespace Poker_AI_Game
             {
                 //Start of the game, players bet then flip 3
                 case 0:
-                    BetBlinds();
                     DealCardsToAllPlayers();
                     UserAction();
                     DealToTable(3);
@@ -127,55 +125,6 @@ namespace Poker_AI_Game
             //If gamePhase >= 4 then reset to 0, else add 1 to gamePhase
             gamePhase = (gamePhase >= 4) ? 0 : gamePhase + 1;
         }
-        static void CycleButton()
-        {
-            // Button acts cyclic
-            if (button >= players.Count - 1)
-            {
-                button = 0;
-            }
-        }
-
-        static void BetBlinds()
-        {
-            CycleButton();
-
-            int blind = 1;
-
-            // SmallBlind has enough money to bet blind
-            if (players[button].currentChips > blind)
-            {
-                players[button].Bet(blind);
-                Console.WriteLine("Player {0} has bet the small blind of {1}", button + 1, blind);
-                table.currentPot += blind;
-                table.highestBet = blind;
-            }
-            else // If not, player goes all in.
-            {
-                players[button].Bet(players[button].currentChips);
-                players[button].allIn = true;
-                Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 1, players[button].currentBet);
-                table.currentPot += players[button].currentBet;
-                table.highestBet = players[button].currentBet;
-            }
-            //Big Blind has enough money to bet blind
-            if (players[button +1].currentChips > 2 * blind)
-            {
-                players[button + 1].Bet(2 * blind);
-                Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2*blind);
-                table.currentPot += 2 * blind;
-                table.highestBet = 2 * blind;
-            }
-            else // If not, player goes all in
-            {
-                players[button + 1].Bet(players[button + 1].currentChips);
-                players[button + 1].allIn = true;
-                Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 2, players[button+1].currentBet);
-                table.currentPot += players[button + 1].currentBet;
-                table.highestBet = players[button + 1].currentBet;
-            }
-            button++;
-        }
 
         //Deals cards to all players, regardless of how many
         static void DealCardsToAllPlayers()
@@ -206,24 +155,6 @@ namespace Poker_AI_Game
         //Take bets from all players
         static void UserAction()
         {
-            int tButton = button+1;
-
-            //Play from Button
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (tButton == players.Count) tButton = 0;
-                if (!OnlyPlayer()) //Check the player isnt the only one left playing
-
-                {
-                    if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
-                    {
-                        CalculateOptions(players[tButton]);
-                        tButton++;
-                    }
-                }
-            }
-
-            /*
             for (int i = 0; i < players.Count; i++) // <-- Change to a while, have a global roundOver, change to true when all players bet the same
             {
                 if (!OnlyPlayer()) //Check the player isnt the only one left playing
@@ -235,7 +166,6 @@ namespace Poker_AI_Game
                     }
                 }
             }
-            */
         }
 
         static void CalculateOptions(Player player)
@@ -246,6 +176,7 @@ namespace Poker_AI_Game
             if (player.currentChips > 0)
             {
                 fold = true;
+                call = true;
 
                 //Check if player can check
                 if (player.currentBet == table.highestBet)
