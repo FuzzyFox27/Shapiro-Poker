@@ -1,0 +1,28 @@
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+C:\Users\capta\Desktop\Group Project\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+C:\Users\Daniel\Desktop\Shapiro-Poker-master\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+D:\Documents\GitHub\Shapiro-Poker\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe.config
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.exe
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\bin\Debug\ShapiroPoker.pdb
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csprojAssemblyReference.cache
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.exe
+C:\Users\Student\Desktop\Shapiro-Poker-Hand-Recogniser\ShapiroPoker\ShapiroPoker\obj\Debug\ShapiroPoker.pdb
