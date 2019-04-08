@@ -12,6 +12,8 @@ namespace Poker_AI_Game
         public int currentChips = 0;
         public int gamesWon = 0;
 
+        public int blindPaid = 0;
+
         //Per Turn Vars
         public int currentBet = 0;
         public bool inRound = true;
@@ -76,6 +78,11 @@ namespace Poker_AI_Game
         {
             currentChips -= amount;
             currentBet += amount;
+        }
+
+        public void setBlind(int amount)
+        {
+            blindPaid = amount;
         }
 
         public void PrintHand()

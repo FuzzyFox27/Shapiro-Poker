@@ -15,7 +15,10 @@ namespace Poker_AI_Game
 
         public bool reraise = false;
         float[] weights = new float[4];
-        List<Tuple<int, int>> Tendencies;
+
+        int VPIP = 0;
+        List<int> PFRs = new List<int>();
+        List<Tuple<int, int>> Tendencies = new List<Tuple<int, int>>();
 
         public AI(int ID, int startingChips)
         {
@@ -150,17 +153,60 @@ namespace Poker_AI_Game
             System.Threading.Thread.Sleep(1000);
         }
 
-        public void AddTendency(int VPIP, int PFR)
+        public void AddTendency(int aVPIP, int PFR)
         {
-            Tendencies.Add(Tuple.Create(VPIP, PFR));
+            PFRs.Add(PFR);
+            if (aVPIP < VPIP) VPIP += aVPIP;
+            else VPIP = aVPIP;
+        }
+        
+        public void CompileTendencies()
+        {
+            if (VPIP > 0) Tendencies.Add(Tuple.Create(VPIP, PFRs.Sum()));
         }
 
-        public void CalculatePlayerTendencies(List<Player> players, int gamesPlayed, Table table)
+        public void ExaminePlayerType(List<Player> players, int gamesPlayed)
         {
-            float winRate = players[1].gamesWon / gamesPlayed;
-            int PIP, VPIP, PFR;
-            PIP = players[1].currentBet;
+            if (Tendencies.Count > 0)
+            {
+                float winRate = players[1].gamesWon / gamesPlayed;
+                float passive = 0f;
+                float aggressive = 0f;
 
+                //Passive 
+                int SumOfVPIP = 0;
+                int SumOfPFR = 0;
+                foreach (var t in Tendencies)
+                {
+                    SumOfVPIP += t.Item1;
+                    SumOfPFR += t.Item2;
+                }
+                float VPIPAverage = SumOfVPIP / Tendencies.Count;
+                float PFRAverage = SumOfPFR / Tendencies.Count;
+                passive = 1f - ((VPIPAverage - PFRAverage) / 100f);
+
+                //Aggressive
+                aggressive = PFRAverage / 100f;
+
+                //Tight
+                if (VPIPAverage < 50 && PFRAverage < (VPIPAverage / 2f))
+                {
+                    weights[0] += 0.03f;
+                }
+
+                //Bluffer
+                if (aggressive > 0.5f && winRate < 0.5f)
+                {
+                    weights[0] -= 0.03f;
+                }
+
+                //Normal
+                if (passive < 0.5f)
+                {
+                    weights[0] += 0.03f;
+                }
+            }
+            
         }
 
         public void ExaminePlayerMove(int playerRaisedAmount, List<Player> players)

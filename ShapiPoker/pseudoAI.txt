@@ -1,0 +1,78 @@
+AI Hand strength:
+	Score Highest card only:
+		A = 10
+		K = 8
+		Q = 7
+		J = 6
+		10 - 2 = 1/2 of card value (10 = 5, 7 = 3.5)
+	If pair >= 5,5: multiply by 2 (5,5 = 10. KK = 16)
+	If cards are of same suit, +2 points
+	subtract points if there is a gap between card ranks.
+		1 card gap = -1
+		2 card gap = -2
+		3 card gap = -4
+		4+ card gap = -5. (Aces high, so A2 = -5 for example)
+	Add 1 point if there is a 0 or 1 card gap and both cards are lower than a Q (not apply to pairs)
+	round up half point scores
+	Play(Score);
+
+Play(int Score)
+{
+	If Score >= 9, raise 3x Big Blind
+	If score <= 8, Fold.
+	If player re-raises, only call when score >= 10
+	if player re-raises, raise again when score >= 12
+}
+
+Player Tendencies
+	global int[] Tendencies = Tuple of VPIP, PFR
+	global int PlayerWinRate;
+	global int GamesPlayed;
+	int VPIP // voluntarily put £ in pot // the bigger the gap in VPIP and PFR = the more passive a player is.
+	int PFR // pre flop raise //Higher PFr = More Aggressive
+
+	//BLINDS
+	
+	AmountToCheck = table.highestbet - player.currentbet
+	VPIP = VPIP + AmountToCheck + Raised Amount 
+	//EG. sB = 1, BB = 2. Pot = 3. (USING AI AS EXAMPLE, AI DOESN'T NEED TO KEEP ITS OWN DATA. THIS IS JUST TO SHOW HOW IT WORKS)
+	//AI has to call 1 to check.
+	//On top of the call that must be made to keep playing, AI could raise 3*BB for example. AmountToCheck =1, RaisedAmount = 6.
+	//VPIP = 0 + 1 + 6 = 7.
+	PFR = PFR + AmountRaised
+	//PFR = 0 + 6 = 6.
+	//Save repetition, make these functions.
+//End Players Turn
+
+AI learns
+	int Weighting =  //Some value between 0 and 2.
+	//AI determines player's archtype - passive, tight, bluffer etc.
+	//Passive Calc:
+		1 - ((SumOfVPIPAverages - SumOfPFRAverages)/100)	
+	// Gets percentage of player being passive
+	//Aggressive Calc: 	
+		SumOfPFR/100 = aggro%
+
+	//Tight Calc:
+		If low VPIP and low PFR
+			player is tight. Raise weighting of Player Raises
+	//Bluffer Calc:
+		WinRate = Wins/TotalGames
+		If high aggro% and low winrate
+			player is bluffer. Lower weighting of Player raises
+
+	//Actually Good at Poker
+		If low passive
+			Actually good at poker. Raise weightings of Player Raises
+AI examines Player Move
+	int PlayerRaiseAmount
+	int WeightedPlayerRaiseAmount = Weighting * playerRaiseAmount
+
+	int confidence = WeightedPlayerRaiseAmount / player.chips
+	int AIConfidence = 1
+	
+	If Confidence is high, AI Confidence is lowered
+	If Confidence is low, AI confidence is raised
+
+	int PercievedScore = Score * AIConfidence
+	Play(PercievedScore);
