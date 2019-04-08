@@ -18,30 +18,51 @@ namespace Poker_AI_Game
         {
             //Loop through all players -> check for royal flush -> if one they win, if two go into deeper check
             //If none loop through all players and check for straight flush -> if one they win, if two go into deeper check -> etc
-            
+
             Card[] onTable = table.GetTable().ToArray();
-            
+
+            Console.WriteLine(" FI am HERE.....................");
+            Console.ReadKey();
             for (int i = 0; i < players.Count; i++)
             {
                 Card[] playerHand = players[i].getPlayerHand();
+                //for (int j = 0; j < playerHand.Length; j++)
+                //{
+                //    Console.WriteLine(playerHand[j].rank + " " +playerHand[j].suit);
+                //}
+                //Console.WriteLine();
+                //for (int j = 0; j < onTable.Length; j++)
+                //{
+                //    Console.WriteLine(onTable[j].rank + " " + onTable[j].suit);
+                //}
+                //Console.WriteLine();
+                Card[] allCards = new Card[onTable.Length + playerHand.Length];
+                onTable.CopyTo(allCards, 0);
+                playerHand.CopyTo(allCards, onTable.Length);
 
-                if (CheckRoyalFlush(playerHand, onTable))
+                for(int j = 0;j < allCards.Length;j++)
+                {
+                    Console.WriteLine(allCards[j].rank + " " + allCards[j].suit);
+                }
+
+
+                if (CalculateGrade(allCards, 0)== true)
                     players[i].grade = Grades.RoyalFlush;
-                else if (CheckStraightFlush(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.StraightFlush) == true)
                     players[i].grade = Grades.StraightFlush;
-                else if (CheckFourOfAKind(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.FourOfAKind) == true)
                     players[i].grade = Grades.FourOfAKind;
-                else if (CheckFullHouse(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.FullHouse) == true)
                     players[i].grade = Grades.FullHouse;
-                else if (CheckFlush(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.Flush) == true)
                     players[i].grade = Grades.Flush;
-                else if (CheckStraight(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.Straight) == true)
                     players[i].grade = Grades.Straight;
-                else if (CheckThreeOfAKind(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.ThreeOfAKind) == true)
                     players[i].grade = Grades.ThreeOfAKind;
-                else if (CheckTwoPair(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.TwoPairs) == true)
                     players[i].grade = Grades.TwoPairs;
-                else if (CheckPair(playerHand, onTable))
+                else if (CalculateGrade(allCards, Grades.Pair) == true)
                     players[i].grade = Grades.Pair;
                 else
                     players[i].grade = Grades.HighCard;
@@ -116,50 +137,6 @@ namespace Poker_AI_Game
             }
         }
 
-        bool CheckRoyalFlush(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckStraightFlush(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckFourOfAKind(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckFullHouse(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckFlush(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckStraight(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckThreeOfAKind(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckTwoPair(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
-
-        bool CheckPair(Card[] playerHand, Card[] tableCards)
-        {
-            return false;
-        }
 
         int GetHighestCard(Card[] cards)
         {
@@ -183,10 +160,418 @@ namespace Poker_AI_Game
                 return (int)cards[0].rank;
             }
         }
-    }
 
-    public enum Grades
-    {
-        RoyalFlush, StraightFlush, FourOfAKind, FullHouse, Flush, Straight, ThreeOfAKind, TwoPairs, Pair, HighCard
+        public enum Grades
+        {
+            RoyalFlush, StraightFlush, FourOfAKind, FullHouse, Flush, Straight, ThreeOfAKind, TwoPairs, Pair, HighCard
+        }
+
+        public bool CalculateGrade(Card[] allCards, Grades grade) {
+
+            int grades = (int)grade;
+            Console.WriteLine(grades);
+            Console.ReadKey();
+            switch (grades){
+                case 0: //Royal flush
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> differentCards = new List<Card>();
+                        int countCardsLessThan10 = 0;
+                        for (int i = 0; i < allCards.Length; i++)
+                        {
+                            if ((int)allCards[i].rank < 9 && allCards[i].rank > 0)
+                            {
+                                countCardsLessThan10++;
+                            }
+                            else
+                            {
+                                if (countCardsLessThan10 < 3)
+                                {
+                                    if (differentCards.Count == 0)
+                                    {
+                                        differentCards.Add(allCards[i]);
+                                    }
+                                    else
+                                    {
+                                        if (differentCards.Count < 5)
+                                        {
+                                            bool goodCard = false;
+                                            foreach (Card c in differentCards)
+                                            {
+                                                if (allCards[i].rank == c.rank || allCards[i].suit != c.suit)
+                                                {
+                                                    goodCard = false;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    goodCard = true;
+                                                }
+                                            }
+                                            if (goodCard == true)
+                                            {
+                                                differentCards.Add(allCards[i]);
+                                            }
+                                        }
+                                        else
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                
+                            }
+                            
+                        }
+                        if (differentCards.Count == 5)
+                        {
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+                break;
+                
+                case 1: //Straight flush
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> differentCards = new List<Card>();
+                        int indexBreak = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        List<Card> descendedAllCards = allCards.OrderBy(Card => Card.rank).ToList();                     
+                        for (int i = 0; i < descendedAllCards.Count - 1; i++)
+                        {
+                            Card currentCard = descendedAllCards[i];
+                            Card nextCard = descendedAllCards[i+1];
+                            if (indexBreak < 3)
+                            {
+                                if (differentCards.Count == 0)
+                                {
+                                    differentCards.Add(currentCard);
+                                    if (currentCard.rank == nextCard.rank - 1 && currentCard.suit == nextCard.suit)
+                                    {
+                                        differentCards.Add(descendedAllCards[i]);
+                                    }
+                                    else
+                                    {
+                                        indexBreak++;
+                                        differentCards.Clear();
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (differentCards.Count < 5)
+                                    {
+                                        Console.WriteLine(currentCard.rank +" "+ nextCard.rank + " " + currentCard.suit + " " + nextCard.suit);
+                                        if (currentCard.rank == nextCard.rank - 1 && currentCard.suit == nextCard.suit)
+                                        {
+                                            differentCards.Add(descendedAllCards[i]);
+                                        }
+                                        else
+                                        {
+                                            indexBreak++;
+                                            differentCards.Clear();
+                                        }
+                                    }
+                                    else
+                                        break;
+                                }
+                                    
+                            }
+                            else
+                            {
+                                 break;
+                            }
+
+                            
+
+                        }
+                        if (differentCards.Count >= 5)
+                        {
+                            Console.WriteLine(" Straight flush.....................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 2:  //Four of a kind
+                    if (allCards.Length > 4)
+                    {
+                        int countCard = 0;
+                        bool fourOfAKind = false;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            for(int j = i + 1; j < allCards.Length; j++)
+                            {
+                                if(allCards[i].rank == allCards[j].rank)
+                                {
+                                    countCard++;
+                                }
+                            }
+                            if (countCard < 3)
+                            {
+                                countCard = 0; 
+                            }
+                            else
+                            {
+                                fourOfAKind = true;
+                            }
+
+                        }
+                        if(fourOfAKind == true)
+                        {
+                            Console.WriteLine(" Four of a kind......................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 3: // Full House
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> allCardsList = allCards.ToList();
+                        int countCard = 0;
+                        int position = 0;//position of one of the cards from the threeOfAKind 
+                        bool pair = false;
+                        bool threeOfAKind = false;
+                        for (int i = 0; i < allCardsList.Count - 1; i++)
+                        {
+                            for (int j = i + 1; j < allCardsList.Count; j++)
+                            {
+                                if (allCardsList[i].rank == allCardsList[j].rank)
+                                {
+                                    countCard++;
+                                    position = j;
+                                }
+                            }
+                            if (countCard < 2)
+                            {
+                                if (countCard < 1)
+                                {
+                                    countCard = 0;
+                                }
+                                else
+                                {
+                                    pair = true;
+                                    countCard = 0;
+                                }
+                            }
+                            else
+                            {
+                                threeOfAKind = true;
+                                allCardsList.RemoveAt(position);
+                                countCard = 0;
+                            }
+                            
+
+                        }
+                        if (pair == true && threeOfAKind == true)
+                        {
+                            Console.WriteLine(" Full House......................");
+                            Console.ReadKey();
+
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 4: //Flush
+                    if (allCards.Length > 4)
+                    {
+                        int countCard = 0;
+                        bool flush = false;
+                        for (int i = 0; i < 6; i++)
+                        {
+                            for (int j = i + 1; j < allCards.Length; j++)
+                            {
+                             //   Console.WriteLine(allCards[i].suit +" "+ allCards[j].suit);
+                                if (allCards[i].suit == allCards[j].suit)
+                                {
+                                    countCard++;
+                                }
+                            }
+                           // Console.WriteLine(allCards[i].suit + " " + countCard);
+                            if (countCard >= 4)
+                            {
+                                flush = true;
+                            }
+                            else
+                            {
+                                countCard=0;
+                            }
+
+                        }
+                        if (flush == true)
+                        {
+                            Console.WriteLine(" Flush......................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 5: // Straight
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> differentCards = new List<Card>();
+                        int indexBreak = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        List<Card> descendedAllCards = allCards.OrderBy(Card => Card.rank).ToList();
+                        for (int i = 0; i < descendedAllCards.Count - 1; i++)
+                        {
+                            Card currentCard = descendedAllCards[i];
+                            Card nextCard = descendedAllCards[i + 1];
+                            if (indexBreak < 5)
+                            {
+                                if (differentCards.Count == 0)
+                                {
+                                    differentCards.Add(currentCard);
+                                    if (currentCard.rank == nextCard.rank - 1)
+                                    {
+                                        differentCards.Add(descendedAllCards[i]);
+                                    }
+                                    else
+                                    {
+                                        indexBreak++;
+                                        differentCards.Clear();
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (differentCards.Count < 5)
+                                    {
+                                        if (currentCard.rank == nextCard.rank - 1)
+                                        {
+                                            differentCards.Add(descendedAllCards[i]);
+                                        }
+                                        else
+                                        {
+                                            indexBreak++;
+                                            differentCards.Clear();
+                                        }
+                                    }
+                                    else
+                                        break;
+                                }
+
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+
+
+                        }
+                        if (differentCards.Count >= 5)
+                        {
+                            Console.WriteLine(" Straight .....................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 6: //Three of a kind
+                    if (allCards.Length > 4)
+                    {
+                        int countCard = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        bool threeOfAKind = false;
+                        for (int i = 0; i < 6; i++)
+                        {
+                            for (int j = i + 1; j < allCards.Length; j++)
+                            {
+                                if (allCards[i].rank == allCards[j].rank)
+                                {
+                                    countCard++;
+                                }
+                            }
+                            if(countCard < 2)
+                            {
+                                countCard = 0;
+                            }
+                            else
+                            {
+                                threeOfAKind = true;
+                            }
+
+                        }
+                        if (threeOfAKind == true)
+                        {
+                            Console.WriteLine(" Three of Kind......................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 7: // Two pair
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> allCardsList = allCards.ToList();
+                        int countCard = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        int countPairs = 0;
+                        for (int i = 0; i < allCardsList.Count-1; i++)
+                        {
+                            for (int j = i + 1; j < allCardsList.Count; j++)
+                            {
+                                if (allCards[i].rank == allCards[j].rank)
+                                {
+                                    countPairs++;
+                                }
+                                
+                            }
+                            if(countPairs == 2)
+                            {
+                                Console.WriteLine(" Two Pair......................");
+                                Console.ReadKey();
+                                return true;
+                            }
+
+                        }
+                        if (countPairs == 2)
+                        {
+                            Console.WriteLine(" Two Pair......................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+                case 8: // Pair
+                    Console.WriteLine(allCards.Length + " Pair......................");
+                    if (allCards.Length > 4)
+                    {
+                        List<Card> differentCards = new List<Card>();
+                        int countCard = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        for (int i = 0; i < 6; i++)
+                        {
+                            for (int j = i + 1; j < allCards.Length; j++)
+                            {
+                                if (allCards[i].rank == allCards[j].rank)
+                                {
+                                    countCard++;
+                                }
+                            }
+
+                        }
+                        Console.WriteLine(countCard + " countCard");
+                        if (countCard == 1)
+                        {
+                            //Console.WriteLine(countCard);
+                            Console.WriteLine("Pair......................");
+                            Console.ReadKey();
+                            return true;
+                        }
+                    }
+
+                    break;
+            }
+            return false;
+        }
     }
+  
 }
