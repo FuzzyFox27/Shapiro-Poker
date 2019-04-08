@@ -38,7 +38,7 @@ namespace Poker_AI_Game
                 }
                 else if (ans == 2)
                 {
-                    //Call AI Functions, Intergrate AI here, And normal game functions 
+                    //Call AI Fucntions, Intergrate AI here, And normal game functions 
                     //Unsire how to incorporate our neural network here, help appreciated 
                 }
                 else if (ans == 3)
@@ -107,14 +107,14 @@ namespace Poker_AI_Game
                     List<Card> tempTable = new List<Card>();
                     tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
                     tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.Queen));
+                    tempTable.Add(new Card(Suits.Spades, Ranks.Nine));
                     tempTable.Add(new Card(Suits.Hearts, Ranks.King));
                     tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
                     table.presentOnTable = tempTable;
 
                     List<Card> tempHand = new List<Card>();
-                    tempHand.Add(new Card(Suits.Hearts, Ranks.Ace));
-                    tempHand.Add(new Card(Suits.Clubs, Ranks.Seven));
+                    tempHand.Add(new Card(Suits.Spades, Ranks.Nine));
+                    tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
                     players[0].hand = tempHand.ToArray();
                     //Cheat for Testing End
 
@@ -127,6 +127,7 @@ namespace Poker_AI_Game
             //If gamePhase >= 4 then reset to 0, else add 1 to gamePhase
             gamePhase = (gamePhase >= 4) ? 0 : gamePhase + 1;
         }
+
         static void CycleButton()
         {
             // Button acts cyclic
@@ -159,10 +160,10 @@ namespace Poker_AI_Game
                 table.highestBet = players[button].currentBet;
             }
             //Big Blind has enough money to bet blind
-            if (players[button +1].currentChips > 2 * blind)
+            if (players[button + 1].currentChips > 2 * blind)
             {
                 players[button + 1].Bet(2 * blind);
-                Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2*blind);
+                Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2 * blind);
                 table.currentPot += 2 * blind;
                 table.highestBet = 2 * blind;
             }
@@ -170,7 +171,7 @@ namespace Poker_AI_Game
             {
                 players[button + 1].Bet(players[button + 1].currentChips);
                 players[button + 1].allIn = true;
-                Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 2, players[button+1].currentBet);
+                Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 2, players[button + 1].currentBet);
                 table.currentPot += players[button + 1].currentBet;
                 table.highestBet = players[button + 1].currentBet;
             }
@@ -206,7 +207,7 @@ namespace Poker_AI_Game
         //Take bets from all players
         static void UserAction()
         {
-            int tButton = button+1;
+            int tButton = button + 1;
 
             //Play from Button
             for (int i = 0; i < players.Count; i++)
@@ -223,19 +224,6 @@ namespace Poker_AI_Game
                 }
             }
 
-            /*
-            for (int i = 0; i < players.Count; i++) // <-- Change to a while, have a global roundOver, change to true when all players bet the same
-            {
-                if (!OnlyPlayer()) //Check the player isnt the only one left playing
-
-                {
-                    if (players[i].inRound && !players[i].allIn) //Check the player is still in the round and isnt all in
-                    {
-                        CalculateOptions(players[i]);
-                    }
-                }
-            }
-            */
         }
 
         static void CalculateOptions(Player player)
@@ -246,6 +234,7 @@ namespace Poker_AI_Game
             if (player.currentChips > 0)
             {
                 fold = true;
+                call = true;
 
                 //Check if player can check
                 if (player.currentBet == table.highestBet)
@@ -329,7 +318,7 @@ namespace Poker_AI_Game
                         {
                             player.allIn = true;
                         }
-                        player.checking = true;
+                       // player.checking = true;
                         player.Bet(amountToCall);
                         table.currentPot += amountToCall;
                     }
@@ -413,6 +402,30 @@ namespace Poker_AI_Game
                     players[winningPlayers[i]].currentChips += (int)(table.currentPot * potSplit);
                 }
             }
+            //Evaluate.Grades highestGrade = players[0].grade;
+            //List<Player> winners = new List<Player>();
+
+            //for(int i = 1; i < players.Count - 1;i++)
+            //{
+            //    if(players[i].grade > highestGrade)
+            //    {
+            //        highestGrade = players[i].grade;
+            //        winners.Clear();
+            //        winners.Add(players[i]);
+            //    }
+            //    else
+            //    {
+            //        if (players[i].grade == highestGrade)
+            //        {
+            //            winners.Add(players[i]);
+            //        }
+            //    }
+            //}
+            //if(winners[0].highCard > winners[1].highCard)
+            //{
+
+            //}
+
         }
 
         //Reset the round for the next
@@ -490,7 +503,7 @@ namespace Poker_AI_Game
                     Console.Write(players[i].currentChips + "\n");
                     if(players[i].checking == true)
                     {
-                        Console.Write("\tChecking");
+                        //Console.Write("\tChecking");
                     }else if(players[i].allIn == true)
                     {
                         Console.WriteLine("All In !");
