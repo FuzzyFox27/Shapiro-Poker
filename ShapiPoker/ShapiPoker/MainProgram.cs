@@ -14,11 +14,14 @@ namespace Poker_AI_Game
         static List<Player> players = new List<Player>();
         static Table table = new Table();
         static Evaluate evaluate = new Evaluate();
+        static AI Ai;
 
         //Game Vars
         static bool gameActive = true;
         static int gamePhase = 0;
         static int button = 0;
+        static int gamesPlayed = 0;
+        static bool NoRaises = false;
 
         //Main code chain
         static void Main(string[] args)
@@ -38,6 +41,11 @@ namespace Poker_AI_Game
                 }
                 else if (ans == 2)
                 {
+                    PopulateAIGame();
+                    while (gameActive)
+                    {
+                        DecipherPhase();
+                    }
                     //Call AI Functions, Intergrate AI here, And normal game functions 
                     //Unsire how to incorporate our neural network here, help appreciated 
                 }
@@ -59,6 +67,13 @@ namespace Poker_AI_Game
             Console.Clear();
             Console.WriteLine("\tWelcome To Shapiro's Poker\n\t_____________________");
             Console.WriteLine("\t1: P V P\n\t2: P V AI\n\t3: QUIT");
+        }
+
+        static void PopulateAIGame()
+        {
+            Ai = new AI(1, 100);
+            players.Add(Ai);
+            players.Add(new Player(2, 100));
         }
 
         static void PopulatePlayers()
@@ -206,22 +221,36 @@ namespace Poker_AI_Game
         //Take bets from all players
         static void UserAction()
         {
+            
             int tButton = button+1;
-
-            //Play from Button
-            for (int i = 0; i < players.Count; i++)
+            do
             {
-                if (tButton == players.Count) tButton = 0;
-                if (!OnlyPlayer()) //Check the player isnt the only one left playing
-
+                NoRaises = false;
+                for (int i = 0; i < players.Count; i++)
                 {
-                    if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
+                    //Play from button
+                    if (tButton == players.Count) tButton = 0;
+                    if (!OnlyPlayer()) //Check the player isnt the only one left playing
+
                     {
-                        CalculateOptions(players[tButton]);
-                        tButton++;
+                        if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
+                        {
+                            if (players[tButton] is AI)
+                            {
+                                Console.WriteLine("AI");
+                                Ai.ScorePreFlopHand();
+                                players[0] = Ai;
+                            }
+                            CalculateOptions(players[tButton]);
+                            tButton++;
+                        }
                     }
                 }
-            }
+                
+            } while (NoRaises);
+
+            //Play from Button
+            
 
             /*
             for (int i = 0; i < players.Count; i++) // <-- Change to a while, have a global roundOver, change to true when all players bet the same
@@ -342,6 +371,7 @@ namespace Poker_AI_Game
                 //Raise
                 if (choice == 'r')
                 {
+                    NoRaises = true;
                     if (player.possibleActions[3])
                     {
                         TakeRaiseAmount(player);

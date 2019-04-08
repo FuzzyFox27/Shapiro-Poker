@@ -10,6 +10,7 @@ namespace Poker_AI_Game
     {
         public int playerID;
         public int currentChips = 0;
+        public int gamesWon = 0;
 
         //Per Turn Vars
         public int currentBet = 0;
