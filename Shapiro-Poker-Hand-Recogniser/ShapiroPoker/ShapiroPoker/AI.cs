@@ -30,7 +30,14 @@ namespace ShapiroPoker
             if (lastbet <= AIPlayerClass.currentBet)
             {
                 //must either be a call, raise, or fold
-                return 'r';
+                if (AIPlayerClass.currentChips > lastbet || AIPlayerClass.currentChips == 100)
+                {
+                    return 'r';
+                }
+                else
+                {
+                    return 'f';
+                }
             }
             else
             {
@@ -41,7 +48,7 @@ namespace ShapiroPoker
 
         public static string ChooseRaiseAmount()
         {
-            int AmountToRaise = 0;
+            int AmountToRaise = 1;
             int Raise = lastbet + AmountToRaise;
             return Raise.ToString();
         }

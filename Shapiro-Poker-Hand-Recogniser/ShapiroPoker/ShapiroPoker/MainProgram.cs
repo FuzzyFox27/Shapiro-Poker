@@ -122,18 +122,27 @@ namespace Poker_AI_Game
             }
         }
 
+        //this int is to ensure that the first time through the code runs
+        public int firsttime = 0;
         //Take bets from all players
         static void UserAction()
         {
-            for (int i = 0; i < players.Count; i++) // <-- Change to a while, have a global roundOver, change to true when all players bet the same
+            //this int is to ensure that the first time through the code runs
+            int firsttime = 0;
+            while (table.highestBet != players.ElementAt(0).currentBet && table.highestBet != players.ElementAt(1).currentBet || firsttime == 0)
             {
-                if (!OnlyPlayer()) //Check the player isnt the only one left playing
+                if (firsttime == 0) { firsttime++; }
+                for (int i = 0; i < players.Count; i++) // <-- Change to a while, have a global roundOver, change to true when all players bet the same
                 {
-                    if (players[i].inRound && !players[i].allIn) //Check the player is still in the round and isnt all in
+                    if (!OnlyPlayer()) //Check the player isnt the only one left playing
                     {
-                        CalculateOptions(players[i]);
+                        if (players[i].inRound && !players[i].allIn) //Check the player is still in the round and isnt all in
+                        {
+                            CalculateOptions(players[i]);
+                        }
                     }
                 }
+
             }
         }
 
