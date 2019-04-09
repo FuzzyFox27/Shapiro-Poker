@@ -104,18 +104,18 @@ namespace Poker_AI_Game
                 case 4:
 
                     //Cheat for Testing Start
-                    List<Card> tempTable = new List<Card>();
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
-                    tempTable.Add(new Card(Suits.Spades, Ranks.Nine));
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.King));
-                    tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
-                    table.presentOnTable = tempTable;
+                    //List<Card> tempTable = new List<Card>();
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Queen));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Eight));
+                    //tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
+                    //table.presentOnTable = tempTable;
 
-                    List<Card> tempHand = new List<Card>();
-                    tempHand.Add(new Card(Suits.Spades, Ranks.Nine));
-                    tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
-                    players[0].hand = tempHand.ToArray();
+                    //List<Card> tempHand = new List<Card>();
+                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Nine));
+                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
+                    //players[0].hand = tempHand.ToArray();
                     //Cheat for Testing End
 
                     CalculateWinner();

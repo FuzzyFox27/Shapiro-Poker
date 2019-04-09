@@ -17,7 +17,7 @@ namespace Poker_AI_Game
         public bool checking = false;
         public bool allIn = false;
         public Evaluate.Grades grade = Evaluate.Grades.HighCard;
-        public Ranks highCard = Ranks.Two;
+       // public Ranks highCard = Ranks.Two;
 
         //0 = Fold, 1 = Check, 2 = Call, 3 = Raise, 4 = Return to Menu
         public bool[] possibleActions = new bool[5];

@@ -20,32 +20,14 @@ namespace Poker_AI_Game
             //If none loop through all players and check for straight flush -> if one they win, if two go into deeper check -> etc
 
             Card[] onTable = table.GetTable().ToArray();
-
-            Console.WriteLine(" FI am HERE.....................");
-            Console.ReadKey();
             for (int i = 0; i < players.Count; i++)
             {
-                Card[] playerHand = players[i].getPlayerHand();
-                //for (int j = 0; j < playerHand.Length; j++)
-                //{
-                //    Console.WriteLine(playerHand[j].rank + " " +playerHand[j].suit);
-                //}
-                //Console.WriteLine();
-                //for (int j = 0; j < onTable.Length; j++)
-                //{
-                //    Console.WriteLine(onTable[j].rank + " " + onTable[j].suit);
-                //}
-                //Console.WriteLine();
-                Card[] allCards = new Card[onTable.Length + playerHand.Length];
+                Card[] playerHand = players[i].getPlayerHand();                
+                Card[] allCards = new Card[onTable.Length + playerHand.Length]; // array that store the cards from the board and the player i hand
                 onTable.CopyTo(allCards, 0);
                 playerHand.CopyTo(allCards, onTable.Length);
 
-                for(int j = 0;j < allCards.Length;j++)
-                {
-                    Console.WriteLine(allCards[j].rank + " " + allCards[j].suit);
-                }
-
-
+                Console.Write(i+":");
                 if (CalculateGrade(allCards, 0)== true)
                     players[i].grade = Grades.RoyalFlush;
                 else if (CalculateGrade(allCards, Grades.StraightFlush) == true)
@@ -67,7 +49,7 @@ namespace Poker_AI_Game
                 else
                     players[i].grade = Grades.HighCard;
             }
-
+            Console.ReadKey();
             List<int> winners = new List<int>();
             int lowestGrade = 10;
 
@@ -169,8 +151,6 @@ namespace Poker_AI_Game
         public bool CalculateGrade(Card[] allCards, Grades grade) {
 
             int grades = (int)grade;
-            Console.WriteLine(grades);
-            Console.ReadKey();
             switch (grades){
                 case 0: //Royal flush
                     if (allCards.Length > 4)
@@ -227,7 +207,7 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count == 5)
                         {
-                            Console.ReadKey();
+                            Console.WriteLine("Royal Flush...............");
                             return true;
                         }
                     }
@@ -237,8 +217,8 @@ namespace Poker_AI_Game
                     if (allCards.Length > 4)
                     {
                         List<Card> differentCards = new List<Card>();
-                        int indexBreak = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
-                        List<Card> descendedAllCards = allCards.OrderBy(Card => Card.rank).ToList();                     
+                        int indexBreak = 0;                 //if we have less than 5 cards needed for a straight flsuh
+                        List<Card> descendedAllCards = allCards.OrderByDescending(Card => Card.rank).ToList();                     
                         for (int i = 0; i < descendedAllCards.Count - 1; i++)
                         {
                             Card currentCard = descendedAllCards[i];
@@ -248,9 +228,9 @@ namespace Poker_AI_Game
                                 if (differentCards.Count == 0)
                                 {
                                     differentCards.Add(currentCard);
-                                    if (currentCard.rank == nextCard.rank - 1 && currentCard.suit == nextCard.suit)
+                                    if (currentCard.rank == nextCard.rank + 1 && currentCard.suit == nextCard.suit)
                                     {
-                                        differentCards.Add(descendedAllCards[i]);
+                                        differentCards.Add(nextCard);
                                     }
                                     else
                                     {
@@ -263,10 +243,9 @@ namespace Poker_AI_Game
                                 {
                                     if (differentCards.Count < 5)
                                     {
-                                        Console.WriteLine(currentCard.rank +" "+ nextCard.rank + " " + currentCard.suit + " " + nextCard.suit);
-                                        if (currentCard.rank == nextCard.rank - 1 && currentCard.suit == nextCard.suit)
+                                        if (currentCard.rank == nextCard.rank + 1 && currentCard.suit == nextCard.suit)
                                         {
-                                            differentCards.Add(descendedAllCards[i]);
+                                            differentCards.Add(nextCard);
                                         }
                                         else
                                         {
@@ -289,8 +268,8 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count >= 5)
                         {
-                            Console.WriteLine(" Straight flush.....................");
-                            Console.ReadKey();
+
+                            Console.WriteLine("Straight flush...............");
                             return true;
                         }
                     }
@@ -322,8 +301,7 @@ namespace Poker_AI_Game
                         }
                         if(fourOfAKind == true)
                         {
-                            Console.WriteLine(" Four of a kind......................");
-                            Console.ReadKey();
+                            Console.WriteLine("Four Of A Kind...............");
                             return true;
                         }
                     }
@@ -370,9 +348,7 @@ namespace Poker_AI_Game
                         }
                         if (pair == true && threeOfAKind == true)
                         {
-                            Console.WriteLine(" Full House......................");
-                            Console.ReadKey();
-
+                            Console.WriteLine("Full House...............");
                             return true;
                         }
                     }
@@ -387,13 +363,11 @@ namespace Poker_AI_Game
                         {
                             for (int j = i + 1; j < allCards.Length; j++)
                             {
-                             //   Console.WriteLine(allCards[i].suit +" "+ allCards[j].suit);
                                 if (allCards[i].suit == allCards[j].suit)
                                 {
                                     countCard++;
                                 }
                             }
-                           // Console.WriteLine(allCards[i].suit + " " + countCard);
                             if (countCard >= 4)
                             {
                                 flush = true;
@@ -406,8 +380,8 @@ namespace Poker_AI_Game
                         }
                         if (flush == true)
                         {
-                            Console.WriteLine(" Flush......................");
-                            Console.ReadKey();
+                          
+                            Console.WriteLine("Flush...............");
                             return true;
                         }
                     }
@@ -418,19 +392,19 @@ namespace Poker_AI_Game
                     {
                         List<Card> differentCards = new List<Card>();
                         int indexBreak = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
-                        List<Card> descendedAllCards = allCards.OrderBy(Card => Card.rank).ToList();
+                        List<Card> descendedAllCards = allCards.OrderByDescending(Card => Card.rank).ToList();
                         for (int i = 0; i < descendedAllCards.Count - 1; i++)
                         {
                             Card currentCard = descendedAllCards[i];
                             Card nextCard = descendedAllCards[i + 1];
-                            if (indexBreak < 5)
+                            if (indexBreak < 4)
                             {
                                 if (differentCards.Count == 0)
                                 {
                                     differentCards.Add(currentCard);
-                                    if (currentCard.rank == nextCard.rank - 1)
+                                    if (currentCard.rank == nextCard.rank + 1)
                                     {
-                                        differentCards.Add(descendedAllCards[i]);
+                                        differentCards.Add(nextCard);
                                     }
                                     else
                                     {
@@ -443,9 +417,9 @@ namespace Poker_AI_Game
                                 {
                                     if (differentCards.Count < 5)
                                     {
-                                        if (currentCard.rank == nextCard.rank - 1)
+                                        if (currentCard.rank == nextCard.rank + 1)
                                         {
-                                            differentCards.Add(descendedAllCards[i]);
+                                            differentCards.Add(nextCard);
                                         }
                                         else
                                         {
@@ -468,8 +442,8 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count >= 5)
                         {
-                            Console.WriteLine(" Straight .....................");
-                            Console.ReadKey();
+
+                            Console.WriteLine("Straight...............");
                             return true;
                         }
                     }
@@ -501,8 +475,7 @@ namespace Poker_AI_Game
                         }
                         if (threeOfAKind == true)
                         {
-                            Console.WriteLine(" Three of Kind......................");
-                            Console.ReadKey();
+                            Console.WriteLine("Three Of A Kind...............");
                             return true;
                         }
                     }
@@ -512,7 +485,6 @@ namespace Poker_AI_Game
                     if (allCards.Length > 4)
                     {
                         List<Card> allCardsList = allCards.ToList();
-                        int countCard = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
                         int countPairs = 0;
                         for (int i = 0; i < allCardsList.Count-1; i++)
                         {
@@ -526,27 +498,24 @@ namespace Poker_AI_Game
                             }
                             if(countPairs == 2)
                             {
-                                Console.WriteLine(" Two Pair......................");
-                                Console.ReadKey();
+                                Console.WriteLine("Two pair...............");
                                 return true;
                             }
 
                         }
                         if (countPairs == 2)
                         {
-                            Console.WriteLine(" Two Pair......................");
-                            Console.ReadKey();
+                            Console.WriteLine("Two pair...............");
                             return true;
                         }
                     }
 
                     break;
                 case 8: // Pair
-                    Console.WriteLine(allCards.Length + " Pair......................");
                     if (allCards.Length > 4)
                     {
                         List<Card> differentCards = new List<Card>();
-                        int countCard = 0;                 //if we have less than 5 cards needed for a straight flsuh check if 
+                        int countCard = 0;               
                         for (int i = 0; i < 6; i++)
                         {
                             for (int j = i + 1; j < allCards.Length; j++)
@@ -558,12 +527,9 @@ namespace Poker_AI_Game
                             }
 
                         }
-                        Console.WriteLine(countCard + " countCard");
                         if (countCard == 1)
                         {
-                            //Console.WriteLine(countCard);
-                            Console.WriteLine("Pair......................");
-                            Console.ReadKey();
+                            Console.WriteLine("Pair...............");
                             return true;
                         }
                     }
