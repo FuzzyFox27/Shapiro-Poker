@@ -13,14 +13,16 @@ namespace Poker_AI_Game
         private float percievedScore = 0;
 
         private float potOdds;
+        double[] value = new double[10];
 
         public bool reraise = false;
         float[] weights = new float[4];
+        int raiseAmount = 5;
 
         int VPIP = 0;
         List<int> PFRs = new List<int>();
         List<Tuple<int, int>> Tendencies = new List<Tuple<int, int>>();
-        double[] value = new double[10];
+        
 
         public AI(int ID, int startingChips)
         {
@@ -119,11 +121,11 @@ namespace Poker_AI_Game
             }
 
             score = (int) Math.Ceiling(score); //Got final valuation of pre-flop hand.
-            Console.WriteLine(score);
-            Play(score);
+            //Console.WriteLine(score);
 
         }
 
+        /*
         public void Play(float score)
         {
             if (!reraise)
@@ -154,7 +156,7 @@ namespace Poker_AI_Game
             }
             System.Threading.Thread.Sleep(1000);
         }
-
+        */
         public void AddTendency(int aVPIP, int PFR)
         {
             PFRs.Add(PFR);
@@ -234,6 +236,7 @@ namespace Poker_AI_Game
 
             ValueOfPot = table.currentPot;
             CostToPlay = table.highestBet - currentBet;
+            if (CostToPlay == 0) CostToPlay = 1;
 
             potOdds = ValueOfPot / CostToPlay;
         }
@@ -270,6 +273,8 @@ namespace Poker_AI_Game
 
         public void SimulateHands(Table table)
         {
+            WorkOutOddsForPot(table);
+
             Deck simDeck = new Deck();
             List<Card> simHand = new List<Card>();
             Evaluate eval = new Evaluate();
@@ -361,7 +366,52 @@ namespace Poker_AI_Game
             Console.WriteLine("{0}% chance of getting a straight flush", value[1]);
             Console.WriteLine("{0}% chance of getting a royal flush", value[0]);
             Console.ReadLine();
+            for (int i = 0; i < 10; i++)
+            {
+                handConfidence += (10-i) * (float) value[i];
+            }
+            handConfidence /= 100;
             
+        }
+
+        public char Play()
+        {
+            char ans;
+
+            int checking = 0;
+            float tScore = score;
+            bool stop = false;
+            do
+            {
+                if (value[checking] > 60)
+                {
+                    stop = true;
+                }
+                else checking++;
+            } while (!stop);
+            checking = 9 - checking;
+            tScore += checking * score;
+            if (tScore >= 50)
+            {
+                ans = 'r';
+            }
+            else if (tScore > 0)
+            {
+                ans = 'c';
+            }
+            else ans = 'f';
+
+            //If PotOdds > OddsToWin, Raise
+
+            return ans;
+        }
+
+        public int GetRaiseAmount(int amountToCall)
+        {
+            float amountToRaise = amountToCall;
+            amountToRaise += (float)handConfidence * (float) raiseAmount;
+            
+            return (int) amountToRaise;
         }
 
     }

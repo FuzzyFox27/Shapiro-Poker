@@ -223,30 +223,35 @@ namespace Poker_AI_Game
             int tButton = button + 1;
             bool play = true;
             //Play from Button
+
             do
             {
                 //for (int i = 0; i < players.Count; i++)
                 //{
-                    if (tButton == players.Count) tButton = 0;
-                    if (!OnlyPlayer()) //Check the player isnt the only one left playing
+                
+                if (!OnlyPlayer()) //Check the player isnt the only one left playing
 
+                {
+                    if (tButton == players.Count) tButton = 0;
+                    if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
                     {
-                        if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
+                        if (players[tButton] is AI)
                         {
-                            if (players[0] is AI)
-                            {
-                                Ai.SimulateHands(table);
-                            }
-                            CalculateOptions(players[tButton]);
-                            tButton++;
-                        }
+                            Ai.SimulateHands(table);
+                            Ai.ScorePreFlopHand();
+                            PlayTurn(players[tButton], Ai.Play());
+                            
+                        } else CalculateOptions(players[tButton]);
+                        tButton++;
                     }
+                }
                 //}
                 if (button == 1)
                 {
                     if (players[1].checking) play = false;
                 }
                 else if (players[0].checking) play = false;
+                if (OnlyPlayer()) play = false;
             } while (play); //Until Big Blind Checks
             
 
@@ -373,6 +378,83 @@ namespace Poker_AI_Game
                 }
             }
         }
+
+        static void PlayTurn(Player player, char choice)
+        {
+            bool result = true;
+            if (!result || choice != 'f' && choice != 'c' && choice != 'r' && choice != 'q') //Check if cannot parse, or if not equal to a choice
+            {
+                Console.WriteLine("Unrecognised input, please try again...");
+                TakeActionInput(player);
+            }
+            else
+            {
+                //Fold
+                if (choice == 'f')
+                {
+                    player.inRound = false;
+                }
+
+                //Check or Call
+                else if (choice == 'c')
+                {
+                    //Look if Check is false
+                    if (player.possibleActions[1] == false)
+                    {
+                        //Call
+                        Console.WriteLine("Call");
+                        int amountToCall = table.highestBet - player.currentBet;
+
+                        if (amountToCall > player.currentChips)
+                        {
+                            player.allIn = true;
+                        }
+                        // player.checking = true;
+                        player.Bet(amountToCall);
+                        table.currentPot += amountToCall;
+                    }
+                    else
+                    {
+                        player.checking = true;//Check
+                        Console.WriteLine("Check");
+                    }
+                }
+
+                //Raise
+                else if (choice == 'r')
+                {
+                    if (player.possibleActions[3])
+                    {
+                        //TakeRaiseAmount(player);
+                        int amountToCall = table.highestBet - player.currentBet;
+                        int amountToRaise = Ai.GetRaiseAmount(amountToCall);                        
+
+                        if (amountToRaise > 0 && amountToRaise + amountToCall <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
+                        {
+                            player.Bet(amountToRaise + amountToCall);
+                            table.currentPot += amountToRaise + amountToCall;
+                            table.highestBet = player.currentBet;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Not enough chips");
+                            TakeRaiseAmount(player);
+                        }
+
+                    }
+                }
+
+                //Quit
+                else if (choice == 'q')
+                {
+                    if (player.possibleActions[4])
+                    {
+                        Main(null);
+                    }
+                }
+            }
+        }
+
 
         //Player raises
         static void TakeRaiseAmount(Player player)
