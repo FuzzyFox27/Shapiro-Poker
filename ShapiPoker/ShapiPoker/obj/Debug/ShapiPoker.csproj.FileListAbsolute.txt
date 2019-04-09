@@ -19,3 +19,10 @@ C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\ob
 C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
 C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
 C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb

@@ -104,18 +104,18 @@ namespace Poker_AI_Game
                 case 4:
 
                     //Cheat for Testing Start
-                    List<Card> tempTable = new List<Card>();
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
-                    tempTable.Add(new Card(Suits.Spades, Ranks.Nine));
-                    tempTable.Add(new Card(Suits.Hearts, Ranks.King));
-                    tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
-                    table.presentOnTable = tempTable;
+                    //List<Card> tempTable = new List<Card>();
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Queen));
+                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Eight));
+                    //tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
+                    //table.presentOnTable = tempTable;
 
-                    List<Card> tempHand = new List<Card>();
-                    tempHand.Add(new Card(Suits.Spades, Ranks.Nine));
-                    tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
-                    players[0].hand = tempHand.ToArray();
+                    //List<Card> tempHand = new List<Card>();
+                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Nine));
+                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
+                    //players[0].hand = tempHand.ToArray();
                     //Cheat for Testing End
 
                     CalculateWinner();
@@ -272,7 +272,7 @@ namespace Poker_AI_Game
                 options += " Fold (F) ";
             if (player.possibleActions[1])
                 options += " Check (C) ";
-            if (player.possibleActions[2])
+            if (player.possibleActions[2] && table.highestBet - player.currentBet > 0)
                 options += " Call (C)(" + (table.highestBet - player.currentBet).ToString() + ")"; //Show how many chips it is to call
             if (player.possibleActions[3])
                 options += " Raise (R) ";
@@ -288,7 +288,7 @@ namespace Poker_AI_Game
         static void TakeActionInput(Player player)
         {
             char choice;
-            string input = Console.ReadLine().ToLower();
+            string input = Console.ReadKey().Key.ToString().ToLower();
             bool result = Char.TryParse(input, out choice);
 
             if (!result || choice != 'f' && choice != 'c' && choice != 'r' && choice != 'q') //Check if cannot parse, or if not equal to a choice
