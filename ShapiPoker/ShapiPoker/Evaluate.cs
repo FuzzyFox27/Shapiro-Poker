@@ -21,7 +21,7 @@ namespace Poker_AI_Game
 
             Card[] onTable = table.GetTable().ToArray();
 
-            Console.WriteLine(" FI am HERE.....................");
+            Console.WriteLine("\n I am HERE.....................");
             Console.ReadKey();
             for (int i = 0; i < players.Count; i++)
             {

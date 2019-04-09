@@ -26,6 +26,7 @@ namespace Poker_AI_Game
         //Main code chain
         static void Main(string[] args)
         {
+            players.Clear();
             MainMenu();
             try
             {
