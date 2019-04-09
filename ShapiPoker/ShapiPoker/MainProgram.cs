@@ -14,11 +14,14 @@ namespace Poker_AI_Game
         static List<Player> players = new List<Player>();
         static Table table = new Table();
         static Evaluate evaluate = new Evaluate();
+        static AI Ai;
 
         //Game Vars
         static bool gameActive = true;
         static int gamePhase = 0;
         static int button = 0;
+        static int gamesPlayed = 0;
+        static bool NoRaises = false;
 
         //Main code chain
         static void Main(string[] args)
@@ -38,7 +41,12 @@ namespace Poker_AI_Game
                 }
                 else if (ans == 2)
                 {
-                    //Call AI Fucntions, Intergrate AI here, And normal game functions 
+                    PopulateAIGame();
+                    while (gameActive)
+                    {
+                        DecipherPhase();
+                    }
+                    //Call AI Functions, Intergrate AI here, And normal game functions 
                     //Unsire how to incorporate our neural network here, help appreciated 
                 }
                 else if (ans == 3)
@@ -59,6 +67,13 @@ namespace Poker_AI_Game
             Console.Clear();
             Console.WriteLine("\tWelcome To Shapiro's Poker\n\t_____________________");
             Console.WriteLine("\t1: P V P\n\t2: P V AI\n\t3: QUIT");
+        }
+
+        static void PopulateAIGame()
+        {
+            Ai = new AI(1, 100);
+            players.Add(Ai);
+            players.Add(new Player(2, 100));
         }
 
         static void PopulatePlayers()
@@ -99,6 +114,13 @@ namespace Poker_AI_Game
                 case 3:
                     UserAction();
                     ResetHighestBets();
+                    if (players[0] is AI)
+                    {
+                        gamesPlayed++;
+                        Ai.CompileTendencies();
+                        Ai.ExaminePlayerType(players, gamesPlayed);
+                        players[0] = Ai;
+                    }
                     break;
                 //Winner decided for round, full reset cards
                 case 4:
@@ -147,6 +169,7 @@ namespace Poker_AI_Game
             if (players[button].currentChips > blind)
             {
                 players[button].Bet(blind);
+                players[button].setBlind(blind);
                 Console.WriteLine("Player {0} has bet the small blind of {1}", button + 1, blind);
                 table.currentPot += blind;
                 table.highestBet = blind;
@@ -154,6 +177,7 @@ namespace Poker_AI_Game
             else // If not, player goes all in.
             {
                 players[button].Bet(players[button].currentChips);
+                players[button].setBlind(players[button].currentChips);
                 players[button].allIn = true;
                 Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 1, players[button].currentBet);
                 table.currentPot += players[button].currentBet;
@@ -163,13 +187,15 @@ namespace Poker_AI_Game
             if (players[button + 1].currentChips > 2 * blind)
             {
                 players[button + 1].Bet(2 * blind);
-                Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2 * blind);
+                players[button + 1].setBlind(2*blind);
+                Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2*blind);
                 table.currentPot += 2 * blind;
                 table.highestBet = 2 * blind;
             }
             else // If not, player goes all in
             {
                 players[button + 1].Bet(players[button + 1].currentChips);
+                players[button + 1].setBlind(players[button + 1].currentChips);
                 players[button + 1].allIn = true;
                 Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 2, players[button + 1].currentBet);
                 table.currentPot += players[button + 1].currentBet;
@@ -207,22 +233,36 @@ namespace Poker_AI_Game
         //Take bets from all players
         static void UserAction()
         {
-            int tButton = button + 1;
-
-            //Play from Button
-            for (int i = 0; i < players.Count; i++)
+            
+            int tButton = button+1;
+            do
             {
-                if (tButton == players.Count) tButton = 0;
-                if (!OnlyPlayer()) //Check the player isnt the only one left playing
-
+                NoRaises = false;
+                for (int i = 0; i < players.Count; i++)
                 {
-                    if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
+                    //Play from button
+                    if (tButton == players.Count) tButton = 0;
+                    if (!OnlyPlayer()) //Check the player isnt the only one left playing
+
                     {
-                        CalculateOptions(players[tButton]);
-                        tButton++;
+                        if (players[tButton].inRound && !players[tButton].allIn) //Check the player is still in the round and isnt all in
+                        {
+                            if (players[tButton] is AI)
+                            {
+                                Console.WriteLine("AI");
+                                Ai.ScorePreFlopHand();
+                                players[0] = Ai;
+                            }
+                            CalculateOptions(players[tButton]);
+                            tButton++;
+                        }
                     }
                 }
-            }
+                
+            } while (NoRaises);
+
+            //Play from Button
+            
 
         }
 
@@ -313,7 +353,16 @@ namespace Poker_AI_Game
                         //Call
                         
                         int amountToCall = table.highestBet - player.currentBet;
+
+                        if (player.playerID == 2 && players[0] is AI) // Is player turn
+                        {
+                                int PIP = player.currentBet;
+                                int VPIP = PIP - player.blindPaid; // PIP - blinds.
+                                Ai.AddTendency(VPIP+amountToCall,0);
+                        }
+
                         
+
                         if (amountToCall > player.currentChips)
                         {
                             player.allIn = true;
@@ -331,6 +380,7 @@ namespace Poker_AI_Game
                 //Raise
                 if (choice == 'r')
                 {
+                    NoRaises = true;
                     if (player.possibleActions[3])
                     {
                         TakeRaiseAmount(player);
@@ -356,25 +406,34 @@ namespace Poker_AI_Game
 
             if (int.TryParse(input, out int amountToRaise)) //Check input number
             {
-                if (amountToRaise > table.highestBet) //Check if input is more than previous bet
-                {
-                    if (amountToRaise > 0 && amountToRaise <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
+                int amountToCall = table.highestBet - player.currentBet;
+                //if (amountToRaise > table.highestBet - amountToCall) //Check if input is more than previous bet
+                //{
+                    if (amountToRaise + amountToCall > 0 && amountToRaise <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
                     {
-                        player.Bet(amountToRaise);
-                        table.currentPot += amountToRaise;
+                        player.Bet(amountToRaise + amountToCall);
+                        if (player.playerID == 2 && players[0] is AI)
+                        {
+                            int PIP = player.currentBet;
+                            int costToCheck = table.highestBet;
+                            int VPIP = PIP - player.blindPaid; // PIP - blinds.
+                            Ai.AddTendency(VPIP, amountToRaise-costToCheck);
+                        }
+                        table.currentPot += amountToRaise+amountToCall;
                         table.highestBet = player.currentBet;
+                        
                     }
                     else
                     {
                         Console.WriteLine("Not enough chips");
                         TakeRaiseAmount(player);
                     }
-                }
+                /*}
                 else
                 {
                     Console.WriteLine("Not higher than previous bet");
                     TakeRaiseAmount(player);
-                }
+                }*/
             }
             else
             {
@@ -493,6 +552,7 @@ namespace Poker_AI_Game
             Console.WriteLine("\n--------CARDS--------\n");
             player.PrintHand();
             Console.WriteLine("\n--------CHIPS--------\n");
+            Console.WriteLine("Pot: {0}",table.currentPot);
             Console.WriteLine("Player has " + player.currentChips + " chips.");
             Console.WriteLine("Players:");
             for (int i = 0; i < players.Count; i++)
