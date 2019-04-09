@@ -20,6 +20,7 @@ namespace Poker_AI_Game
             //If none loop through all players and check for straight flush -> if one they win, if two go into deeper check -> etc
 
             Card[] onTable = table.GetTable().ToArray();
+            Console.WriteLine();
             for (int i = 0; i < players.Count; i++)
             {
                 Card[] playerHand = players[i].getPlayerHand();                
@@ -28,7 +29,7 @@ namespace Poker_AI_Game
                 playerHand.CopyTo(allCards, onTable.Length);
 
                 Console.Write(i+":");
-                if (CalculateGrade(allCards, 0)== true)
+                if (CalculateGrade(allCards, 0) == true)
                     players[i].grade = Grades.RoyalFlush;
                 else if (CalculateGrade(allCards, Grades.StraightFlush) == true)
                     players[i].grade = Grades.StraightFlush;
@@ -47,7 +48,10 @@ namespace Poker_AI_Game
                 else if (CalculateGrade(allCards, Grades.Pair) == true)
                     players[i].grade = Grades.Pair;
                 else
+                {
+                    Console.WriteLine("High Card");
                     players[i].grade = Grades.HighCard;
+                }
             }
             Console.ReadKey();
             List<int> winners = new List<int>();
