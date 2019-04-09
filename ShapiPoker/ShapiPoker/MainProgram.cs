@@ -127,6 +127,7 @@ namespace Poker_AI_Game
                 case 4:
 
                     //Cheat for Testing Start
+                    /*
                     List<Card> tempTable = new List<Card>();
                     tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
                     tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
@@ -140,6 +141,7 @@ namespace Poker_AI_Game
                     tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
                     players[0].hand = tempHand.ToArray();
                     //Cheat for Testing End
+                    */
 
                     CalculateWinner();
                     Console.ReadLine();
