@@ -147,6 +147,7 @@ namespace Poker_AI_Game
             if (players[button].currentChips > blind)
             {
                 players[button].Bet(blind);
+                players[button].setBlind(blind);
                 Console.WriteLine("Player {0} has bet the small blind of {1}", button + 1, blind);
                 table.currentPot += blind;
                 table.highestBet = blind;
@@ -154,6 +155,7 @@ namespace Poker_AI_Game
             else // If not, player goes all in.
             {
                 players[button].Bet(players[button].currentChips);
+                players[button].setBlind(players[button].currentChips);
                 players[button].allIn = true;
                 Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 1, players[button].currentBet);
                 table.currentPot += players[button].currentBet;
@@ -163,6 +165,7 @@ namespace Poker_AI_Game
             if (players[button + 1].currentChips > 2 * blind)
             {
                 players[button + 1].Bet(2 * blind);
+                players[button+1].setBlind(2*blind);
                 Console.WriteLine("Player {0} has bet the big blind of {1}", button + 2, 2 * blind);
                 table.currentPot += 2 * blind;
                 table.highestBet = 2 * blind;
@@ -170,11 +173,13 @@ namespace Poker_AI_Game
             else // If not, player goes all in
             {
                 players[button + 1].Bet(players[button + 1].currentChips);
+                players[button+1].setBlind(players[button+1].currentChips);
                 players[button + 1].allIn = true;
                 Console.WriteLine("Player {0} has bet the small blind of {1}. They are All In", button + 2, players[button + 1].currentBet);
                 table.currentPot += players[button + 1].currentBet;
                 table.highestBet = players[button + 1].currentBet;
             }
+            //Console.ReadKey();
             button++;
         }
 
@@ -493,13 +498,15 @@ namespace Poker_AI_Game
             Console.WriteLine("\n--------CARDS--------\n");
             player.PrintHand();
             Console.WriteLine("\n--------CHIPS--------\n");
-            Console.WriteLine("Player has " + player.currentChips + " chips.");
-            Console.WriteLine("Players:");
+            Console.WriteLine("Pot: " + table.currentPot);
+            Console.WriteLine("Player " + player.playerID + " has " + player.currentChips + " chips.");
+            //Console.WriteLine("Players:");
+            Console.WriteLine();
             for (int i = 0; i < players.Count; i++)
             {
                 if (players[i].inRound == true)
                 {
-                    Console.Write("Player" + players[i].playerID + "\t");
+                    Console.Write("Player " + players[i].playerID + ":\t");
                     Console.Write(players[i].currentChips + "\n");
                     if(players[i].checking == true)
                     {
