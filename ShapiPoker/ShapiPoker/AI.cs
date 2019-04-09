@@ -9,9 +9,10 @@ namespace Poker_AI_Game
     class AI : Player
     {
         private float handConfidence = 1;
+        private float score = 0;
+        private float percievedScore = 0;
 
-        float score = 0;
-        float percievedScore = 0;
+        private float potOdds;
 
         public bool reraise = false;
         float[] weights = new float[4];
@@ -19,6 +20,7 @@ namespace Poker_AI_Game
         int VPIP = 0;
         List<int> PFRs = new List<int>();
         List<Tuple<int, int>> Tendencies = new List<Tuple<int, int>>();
+        double[] value = new double[10];
 
         public AI(int ID, int startingChips)
         {
@@ -221,6 +223,147 @@ namespace Poker_AI_Game
             else handConfidence -= 0.03f;
             percievedScore = score * handConfidence;
         }
+
+        public void WorkOutOddsForPot(Table table)
+        {
+
+            //EG Pot has 100, costs 10 to play. Pot Odds are 1:10 - must win once in every 10 to break even. This is where hand odds come in
+
+            int ValueOfPot;
+            int CostToPlay; 
+
+            ValueOfPot = table.currentPot;
+            CostToPlay = table.highestBet - currentBet;
+
+            potOdds = ValueOfPot / CostToPlay;
+        }
+
+        /*public void WorkOutHandOuts(Table table)
+        {
+            int outs = 0;
+            bool[] hands = new bool[13];
+            if (table.presentOnTable.Count == 3)
+            {
+                if (this.hand[0].rank == hand[1].rank) //Pair to Set
+                {
+                    outs += 2;
+                }
+                if (this.hand.Max(i => i.rank) > table.presentOnTable.Max(i => i.rank)) //If player has a card higher than the table
+                {
+                    outs += 3;
+                }
+            }
+            //Pocket Pair to Set
+            //One overcard (one card in pocket higher than card on table)
+            //Inside Straight Draw
+            //Two Pair to Full House
+            //One Pair to Two Pairs or Trips
+            //No Pair to Pair
+            //Two Overcards to Overpair
+            //Set to Full House/4OAK
+            //Open-Ended Straight Draw
+            //Flush Draw
+            //Inside Straight Draw and Two Overcards
+            //Inside Straight and Flush Draw
+            //Open-Ended Straight and Flush Draw
+        }*/
+
+        public void SimulateHands(Table table)
+        {
+            Deck simDeck = new Deck();
+            List<Card> simHand = new List<Card>();
+            Evaluate eval = new Evaluate();
+            int[] Probs = new int[10];
+
+            int iterate = 100000;
+
+            for (int i = 0; i < iterate; i++)
+            {
+
+                for (int x = 0; x < hand.Count(); x++) //Removes pocket cards from simDeck
+                {
+                 simDeck.RemoveSpecificCard(hand[x]);
+                 simHand.Add(hand[x]);
+                }
+
+                for (int x = 0; x < table.presentOnTable.Count(); x++) //Removes cards already on table from simDeck
+                {
+                 simDeck.RemoveSpecificCard(table.presentOnTable[x]);
+                 simHand.Add(table.presentOnTable[x]);
+                }
+            
+                while(simHand.Count < 7)
+                {
+                    simHand.Add(simDeck.SimulateWithdrawCard());
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), 0) == true)
+                {
+                    Probs[0] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.StraightFlush) == true)
+                {
+                    Probs[1] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.FourOfAKind) == true)
+                {
+                    Probs[2] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.FullHouse) == true)
+                {
+                    Probs[3] += 1;
+                    //Probs[6] += 1;
+                    //Probs[8] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.Flush) == true)
+                {
+                    Probs[4] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.Straight) == true)
+                {
+                    Probs[5] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.ThreeOfAKind) == true)
+                {
+                    Probs[6] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.TwoPairs) == true)
+                {
+                    Probs[7] += 1;
+                    //Probs[8] += 1;
+                }
+                if (eval.CalculateGrade(simHand.ToArray(), Evaluate.Grades.Pair) == true)
+                {
+                    Probs[8] += 1;
+                }
+
+                Probs[9] += 1;
+                
+
+                simHand.Clear();
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                value[i] = (float)Probs[i] / (float)iterate;
+                value[i] *= 100;
+            }
+
+            //DEBUG//            
+            Console.WriteLine();
+            Console.WriteLine("{0}% chance of getting a high card", value[9]);
+            Console.WriteLine("{0}% chance of getting a pair", value[8]);
+            Console.WriteLine("{0}% chance of getting two pairs", value[7]);
+            Console.WriteLine("{0}% chance of getting three of a kind", value[6]);
+            Console.WriteLine("{0}% chance of getting a straight", value[5]);
+            Console.WriteLine("{0}% chance of getting a flush", value[4]);
+            Console.WriteLine("{0}% chance of getting a full house", value[3]);
+            Console.WriteLine("{0}% chance of getting four of a kind", value[2]);
+            Console.WriteLine("{0}% chance of getting a straight flush", value[1]);
+            Console.WriteLine("{0}% chance of getting a royal flush", value[0]);
+            Console.ReadLine();
+            
+        }
+
     }
 }
 

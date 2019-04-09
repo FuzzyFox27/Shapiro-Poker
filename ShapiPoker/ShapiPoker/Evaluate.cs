@@ -211,7 +211,7 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count == 5)
                         {
-                            Console.WriteLine("Royal Flush...............");
+                            //Console.WriteLine("Royal Flush...............");
                             return true;
                         }
                     }
@@ -273,7 +273,7 @@ namespace Poker_AI_Game
                         if (differentCards.Count >= 5)
                         {
 
-                            Console.WriteLine("Straight flush...............");
+                            //Console.WriteLine("Straight flush...............");
                             return true;
                         }
                     }
@@ -305,7 +305,7 @@ namespace Poker_AI_Game
                         }
                         if(fourOfAKind == true)
                         {
-                            Console.WriteLine("Four Of A Kind...............");
+                            //Console.WriteLine("Four Of A Kind...............");
                             return true;
                         }
                     }
@@ -352,7 +352,7 @@ namespace Poker_AI_Game
                         }
                         if (pair == true && threeOfAKind == true)
                         {
-                            Console.WriteLine("Full House...............");
+                            //Console.WriteLine("Full House...............");
                             return true;
                         }
                     }
@@ -385,7 +385,7 @@ namespace Poker_AI_Game
                         if (flush == true)
                         {
                           
-                            Console.WriteLine("Flush...............");
+                            //Console.WriteLine("Flush...............");
                             return true;
                         }
                     }
@@ -447,7 +447,7 @@ namespace Poker_AI_Game
                         if (differentCards.Count >= 5)
                         {
 
-                            Console.WriteLine("Straight...............");
+                            //Console.WriteLine("Straight...............");
                             return true;
                         }
                     }
@@ -479,7 +479,7 @@ namespace Poker_AI_Game
                         }
                         if (threeOfAKind == true)
                         {
-                            Console.WriteLine("Three Of A Kind...............");
+                            //Console.WriteLine("Three Of A Kind...............");
                             return true;
                         }
                     }
@@ -500,16 +500,16 @@ namespace Poker_AI_Game
                                 }
                                 
                             }
-                            if(countPairs == 2)
+                            if(countPairs >= 2)
                             {
-                                Console.WriteLine("Two pair...............");
+                                //Console.WriteLine("Two pair...............");
                                 return true;
                             }
 
                         }
-                        if (countPairs == 2)
+                        if (countPairs >= 2)
                         {
-                            Console.WriteLine("Two pair...............");
+                            //Console.WriteLine("Two pair...............");
                             return true;
                         }
                     }
@@ -531,9 +531,9 @@ namespace Poker_AI_Game
                             }
 
                         }
-                        if (countCard == 1)
+                        if (countCard >= 1)
                         {
-                            Console.WriteLine("Pair...............");
+                            //Console.WriteLine("Pair...............");
                             return true;
                         }
                     }

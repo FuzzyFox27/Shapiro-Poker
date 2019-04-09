@@ -79,6 +79,19 @@ namespace Poker_AI_Game
                 Console.WriteLine("Suit: " + card.suit + " Rank: " + card.rank);
             }
         }
+
+        public void RemoveSpecificCard(Card card)
+        {
+            publicDeck.Remove(card);
+        }
+
+        public Card SimulateWithdrawCard()
+        {
+            int positionOfCard = rand.Next(0, publicDeck.Count);
+            Card tempCard = publicDeck[positionOfCard];
+            return tempCard;
+        }
+
     }
 
     //Hold information for one card -- Make 52
