@@ -31,10 +31,6 @@ namespace Poker_AI_Game
 
         public void PrintTable()
         {
-            //for (int i = 0; i < presentOnTable.Count; i++)
-            //{
-            //    Console.WriteLine("In Position " + i + " is the " + presentOnTable[i].rank + " of " + presentOnTable[i].suit);
-            //}
             if (presentOnTable.Count > 0)
             {
                 printCards(presentOnTable);
