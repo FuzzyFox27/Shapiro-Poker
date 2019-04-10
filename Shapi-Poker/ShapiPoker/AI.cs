@@ -8,6 +8,7 @@ namespace Poker_AI_Game
 {
     class AI : Player
     {
+        private float winstreak = 1;
         private float handConfidence = 1;
         private float score = 0;
         private float percievedScore = 0;
@@ -17,7 +18,7 @@ namespace Poker_AI_Game
         private float potOdds;
         double[] value = new double[10];
 
-        public bool reraise = false;
+        private int raiseNumber = 0;
         float[] weights = new float[4];
         int raiseAmount = 5;
 
@@ -432,15 +433,21 @@ namespace Poker_AI_Game
             if (value[8] < 0.2) tScore = -10;
 
 
-            if (tScore >= 20)
+            if (tScore >= 5 && raiseNumber < 2)
             {
+
                 ans = 'r';
+                raiseNumber++;
             }
             else if (tScore > 0)
             {
                 ans = 'c';
+                raiseNumber = 0;
             }
-            else ans = 'f';
+            else {
+                ans = 'f';
+                raiseNumber = 0;
+            }
 
             //If PotOdds > OddsToWin, Raise
 
@@ -450,9 +457,21 @@ namespace Poker_AI_Game
         public int GetRaiseAmount(int amountToCall)
         {
             float amountToRaise = amountToCall;
-            amountToRaise += (float)handConfidence * (float) raiseAmount;
-            
-            return (int) amountToRaise;
+            amountToRaise += (float)(1/handConfidence) * (float) raiseAmount * winstreak;
+
+            return (int) Math.Round(amountToRaise);
+        }
+
+        public void streaks(bool win)
+        {
+            if (win)
+            {
+                winstreak = winstreak + (float) 0.1;
+            }
+            else if (winstreak > 0)
+            {
+                winstreak = winstreak - (float) 0.1;
+            }
         }
 
         public void ANN(int Attractiveness, double Probability)
@@ -470,6 +489,11 @@ namespace Poker_AI_Game
             //             /     \
             //           Win     Lose
             //       C+ | A-/p-|| C- | A+/P+
+
+            //Attr * AttrWeight + Prob * ProbWeight = Output
+            //Output = move (check, raise, fold)
+            //Win state and DeltaChips (change in chips) -> Win/Lose conditional branches. Branches affect weights
+
 
         }
 

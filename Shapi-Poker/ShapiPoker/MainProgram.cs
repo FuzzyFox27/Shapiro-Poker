@@ -228,7 +228,7 @@ namespace Poker_AI_Game
             {
                 //for (int i = 0; i < players.Count; i++)
                 //{
-                
+
                 if (!OnlyPlayer()) //Check the player isnt the only one left playing
 
                 {
@@ -240,17 +240,30 @@ namespace Poker_AI_Game
                             Ai.SimulateHands(table);
                             Ai.ScorePreFlopHand();
                             PlayTurn(players[tButton], Ai.Play());
-                            
-                        } else CalculateOptions(players[tButton]);
+
+                        }
+                        else CalculateOptions(players[tButton]);
                         tButton++;
                     }
                 }
+                else play = false;
                 //}
+
+                foreach (Player p in players)
+                {
+                    if (p.blindPaid == 2 && p.checking)
+                    {
+                        play = false;
+                    }
+                }
+
+                /*
                 if (button == 1)
                 {
                     if (players[1].checking) play = false;
                 }
                 else if (players[0].checking) play = false;
+                */
                 if (OnlyPlayer()) play = false;
             } while (play); //Until Big Blind Checks
             
@@ -423,25 +436,30 @@ namespace Poker_AI_Game
                 //Raise
                 else if (choice == 'r')
                 {
-                    if (player.possibleActions[3])
-                    {
                         //TakeRaiseAmount(player);
                         int amountToCall = table.highestBet - player.currentBet;
                         int amountToRaise = Ai.GetRaiseAmount(amountToCall);                        
 
-                        if (amountToRaise > 0 && amountToRaise + amountToCall <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
+                        if (amountToRaise > 0 && amountToRaise <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
                         {
                             player.Bet(amountToRaise + amountToCall);
                             table.currentPot += amountToRaise + amountToCall;
                             table.highestBet = player.currentBet;
                         }
+                        else if (amountToRaise > player.currentChips)
+                    {
+                        table.currentPot += player.currentChips;
+                        table.highestBet = player.currentChips;
+                        player.Bet(player.currentChips);
+                        player.allIn = true;                        
+                    }
                         else
                         {
                             Console.WriteLine("Not enough chips");
-                            TakeRaiseAmount(player);
+                            //TakeRaiseAmount(player);
                         }
 
-                    }
+                    
                 }
 
                 //Quit
@@ -473,7 +491,14 @@ namespace Poker_AI_Game
                         table.currentPot += amountToRaise + amountToCall;
                         table.highestBet = player.currentBet;
                     }
-                    else
+                else if (amountToRaise > player.currentChips)
+                {
+                    table.currentPot += player.currentChips;
+                    table.highestBet = player.currentChips;
+                    player.Bet(player.currentChips);
+                    player.allIn = true;
+                }
+                else
                     {
                         Console.WriteLine("Not enough chips");
                         TakeRaiseAmount(player);
@@ -519,7 +544,12 @@ namespace Poker_AI_Game
             if (players[0] is AI)
             {
                 Ai.DeltaChips();
+                Ai.streaks(true);
                 players[0] = Ai;
+            }
+            else
+            {
+                Ai.streaks(false);
             }
 
 
