@@ -511,8 +511,18 @@ namespace Poker_AI_Game
                 for (int i = 0; i < winningPlayers.Length; i++)
                 {
                     players[winningPlayers[i]].currentChips += (int)(table.currentPot * potSplit);
+                    
                 }
             }
+
+            //Show differece in Player class of current chips and starting chips for AI
+            if (players[0] is AI)
+            {
+                Ai.DeltaChips();
+                players[0] = Ai;
+            }
+
+
             //Evaluate.Grades highestGrade = players[0].grade;
             //List<Player> winners = new List<Player>();
 

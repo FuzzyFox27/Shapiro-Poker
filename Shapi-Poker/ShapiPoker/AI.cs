@@ -12,6 +12,8 @@ namespace Poker_AI_Game
         private float score = 0;
         private float percievedScore = 0;
 
+        private int chipsAtStartOfRound;
+
         private float potOdds;
         double[] value = new double[10];
 
@@ -28,6 +30,13 @@ namespace Poker_AI_Game
         {
             playerID = ID;
             currentChips = startingChips;
+            chipsAtStartOfRound = currentChips;
+        }
+
+        public void DeltaChips() //Works out betting score based on chips gained/lost at the end of a round
+        {
+            int chipDelta = 5;
+            chipDelta += currentChips - chipsAtStartOfRound; //Gains 5 chips -> 105-100 = 5
         }
 
         public void ScorePreFlopHand()
@@ -124,39 +133,6 @@ namespace Poker_AI_Game
             //Console.WriteLine(score);
 
         }
-
-        /*
-        public void Play(float score)
-        {
-            if (!reraise)
-            {
-                if (score >= 9)
-                {
-                    Console.WriteLine("I need to Raise");//Raise
-                }
-                else
-                {
-                    Console.WriteLine("I need to Fold");//Fold
-                }
-            }
-            else
-            {
-                if (score >= 12)
-                {
-                    Console.WriteLine("I need to Raise");//Raise
-                }
-                else if (score >= 10)
-                {
-                    Console.WriteLine("I need to Check");//Check
-                }
-                else
-                {
-                    Console.WriteLine("I need to Fold");//Fold
-                }
-            }
-            System.Threading.Thread.Sleep(1000);
-        }
-        */
         public void AddTendency(int aVPIP, int PFR)
         {
             PFRs.Add(PFR);
@@ -282,22 +258,78 @@ namespace Poker_AI_Game
 
             int iterate = 100000;
 
+/*
+
+            List<Card> simHand1 = new List<Card>();
+            Card n = new Card();
+
+            for (int x = 0; x < table.presentOnTable.Count(); x++) //Removes cards already on table from simDeck
+            {
+                simHand1.Add(table.presentOnTable[x]);
+            }
+
+            while (simHand1.Count < 7)
+            {
+                simHand1.Add(n);
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), 0) == true)
+            {
+                Probs[0] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.StraightFlush) == true)
+            {
+                Probs[1] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.FourOfAKind) == true)
+            {
+                Probs[2] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.FullHouse) == true)
+            {
+                Probs[3] += 1;
+                //Probs[6] += 1;
+                //Probs[8] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.Flush) == true)
+            {
+                Probs[4] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.Straight) == true)
+            {
+                Probs[5] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.ThreeOfAKind) == true)
+            {
+                Probs[6] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.TwoPairs) == true)
+            {
+                Probs[7] += 1;
+                //Probs[8] += 1;
+            }
+            if (eval.CalculateGrade(simHand1.ToArray(), Evaluate.Grades.Pair) == true)
+            {
+                Probs[8] += 1;
+            }
+            */
+
+
             for (int i = 0; i < iterate; i++)
             {
 
                 for (int x = 0; x < hand.Count(); x++) //Removes pocket cards from simDeck
                 {
-                 simDeck.RemoveSpecificCard(hand[x]);
-                 simHand.Add(hand[x]);
+                    simDeck.RemoveSpecificCard(hand[x]);
+                    simHand.Add(hand[x]);
                 }
 
                 for (int x = 0; x < table.presentOnTable.Count(); x++) //Removes cards already on table from simDeck
                 {
-                 simDeck.RemoveSpecificCard(table.presentOnTable[x]);
-                 simHand.Add(table.presentOnTable[x]);
+                    simDeck.RemoveSpecificCard(table.presentOnTable[x]);
+                    simHand.Add(table.presentOnTable[x]);
                 }
-            
-                while(simHand.Count < 7)
+
+                while (simHand.Count < 7)
                 {
                     simHand.Add(simDeck.SimulateWithdrawCard());
                 }
@@ -342,7 +374,7 @@ namespace Poker_AI_Game
                 }
 
                 Probs[9] += 1;
-                
+
 
                 simHand.Clear();
             }
@@ -353,7 +385,9 @@ namespace Poker_AI_Game
                 value[i] *= 100;
             }
 
-            //DEBUG//            
+            //DEBUG//   
+            Console.WriteLine("{0} of {1}, and {2} of {3}", hand[0].rank, hand[0].suit, hand[1].rank, hand[1].suit);
+
             Console.WriteLine();
             Console.WriteLine("{0}% chance of getting a high card", value[9]);
             Console.WriteLine("{0}% chance of getting a pair", value[8]);
@@ -365,18 +399,21 @@ namespace Poker_AI_Game
             Console.WriteLine("{0}% chance of getting four of a kind", value[2]);
             Console.WriteLine("{0}% chance of getting a straight flush", value[1]);
             Console.WriteLine("{0}% chance of getting a royal flush", value[0]);
+
             Console.ReadLine();
+
             for (int i = 0; i < 10; i++)
             {
-                handConfidence += (10-i) * (float) value[i];
+                handConfidence += (10 - i) * (float)value[i];
             }
             handConfidence /= 100;
-            
+
         }
+
 
         public char Play()
         {
-            char ans;
+            char ans = 'f';
 
             int checking = 0;
             float tScore = score;
@@ -391,7 +428,11 @@ namespace Poker_AI_Game
             } while (!stop);
             checking = 9 - checking;
             tScore += checking * score;
-            if (tScore >= 50)
+
+            if (value[8] < 0.2) tScore = -10;
+
+
+            if (tScore >= 20)
             {
                 ans = 'r';
             }
@@ -414,6 +455,23 @@ namespace Poker_AI_Game
             return (int) amountToRaise;
         }
 
+        public void ANN(int Attractiveness, double Probability)
+        {
+            //          A           P
+            //             \      /
+            //               OOOO
+            //               |  |
+            //               C  O
+            //////////////////////////////////////////
+            //      Win State + DeltaChips
+            //////////////////////////////////////////
+            //                O
+            //              /   \
+            //             /     \
+            //           Win     Lose
+            //       C+ | A-/p-|| C- | A+/P+
+
+        }
+
     }
 }
-
