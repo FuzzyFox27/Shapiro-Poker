@@ -1,0 +1,56 @@
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\capta\source\repos\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\Shapiro-Poker-master\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\capta\Desktop\Shapiro-Poker-FuzzyFox27-patch-1\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Andrei\Desktop\ShapiPoker\Shapiro-Poker\Shapiro-Poker-HandCalculations\Shapiro-Poker-HandCalculations\ShapiPoker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\ShapiPoker1\ShapiPoker1\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Documents\GitHub\Shapiro-Poker\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe.config
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\bin\Debug\ShapiPoker.pdb
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csprojAssemblyReference.cache
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.csproj.CoreCompileInputs.cache
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.exe
+C:\Users\Student\Desktop\New folder\Shapiro-Poker-UX\Shapi-Poker\ShapiPoker\obj\Debug\ShapiPoker.pdb
