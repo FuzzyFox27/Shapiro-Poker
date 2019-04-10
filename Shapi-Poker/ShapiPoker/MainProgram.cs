@@ -45,8 +45,8 @@ namespace Poker_AI_Game
                     {
                         DecipherPhase();
                     }
-                    //Call AI Fucntions, Intergrate AI here, And normal game functions 
-                    //Unsire how to incorporate our neural network here, help appreciated 
+                    //Call AI Fucntions, Intergrate AI here, And normal game functions
+                    //Unsire how to incorporate our neural network here, help appreciated
                 }
                 else if (ans == 3)
                 {
@@ -76,7 +76,7 @@ namespace Poker_AI_Game
             players.Add(new Player(3, 100));
             players.Add(new Player(4, 100));
         }
-        
+
         //Actions are taken depending on phase of game
         static void DecipherPhase()
         {
@@ -111,18 +111,18 @@ namespace Poker_AI_Game
                 case 4:
 
                     //Cheat for Testing Start
-                    //List<Card> tempTable = new List<Card>();
-                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
-                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
-                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Queen));
-                    //tempTable.Add(new Card(Suits.Hearts, Ranks.Eight));
-                    //tempTable.Add(new Card(Suits.Spades, Ranks.Seven));
-                    //table.presentOnTable = tempTable;
+                    List<Card> tempTable = new List<Card>();
+                    tempTable.Add(new Card(Suits.Hearts, Ranks.Ten));
+                    tempTable.Add(new Card(Suits.Hearts, Ranks.Jack));
+                    tempTable.Add(new Card(Suits.Spades, Ranks.Queen));
+                    tempTable.Add(new Card(Suits.Spades, Ranks.King));
+                    tempTable.Add(new Card(Suits.Spades, Ranks.Ace));
+                    table.presentOnTable = tempTable;
 
-                    //List<Card> tempHand = new List<Card>();
-                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Nine));
-                    //tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
-                    //players[0].hand = tempHand.ToArray();
+                    List<Card> tempHand = new List<Card>();
+                    tempHand.Add(new Card(Suits.Hearts, Ranks.Nine));
+                    tempHand.Add(new Card(Suits.Hearts, Ranks.Seven));
+                    players[0].hand = tempHand.ToArray();
                     //Cheat for Testing End
 
                     CalculateWinner();
@@ -245,6 +245,7 @@ namespace Poker_AI_Game
                         else CalculateOptions(players[tButton]);
                         tButton++;
                     }
+                    else tButton++;
                 }
                 else play = false;
                 //}
@@ -266,7 +267,7 @@ namespace Poker_AI_Game
                 */
                 if (OnlyPlayer()) play = false;
             } while (play); //Until Big Blind Checks
-            
+
 
         }
 
@@ -355,9 +356,9 @@ namespace Poker_AI_Game
                     if (player.possibleActions[1] == false)
                     {
                         //Call
-                        
+
                         int amountToCall = table.highestBet - player.currentBet;
-                        
+
                         if (amountToCall > player.currentChips)
                         {
                             player.allIn = true;
@@ -421,10 +422,15 @@ namespace Poker_AI_Game
                         if (amountToCall > player.currentChips)
                         {
                             player.allIn = true;
+                            player.Bet(player.currentChips);
+                            table.currentPot += player.currentChips;
                         }
-                        // player.checking = true;
-                        player.Bet(amountToCall);
-                        table.currentPot += amountToCall;
+                        else
+                        {
+                            // player.checking = true;
+                            player.Bet(amountToCall);
+                            table.currentPot += amountToCall;
+                        }
                     }
                     else
                     {
@@ -438,7 +444,7 @@ namespace Poker_AI_Game
                 {
                         //TakeRaiseAmount(player);
                         int amountToCall = table.highestBet - player.currentBet;
-                        int amountToRaise = Ai.GetRaiseAmount(amountToCall);                        
+                        int amountToRaise = Ai.GetRaiseAmount(amountToCall);
 
                         if (amountToRaise > 0 && amountToRaise <= player.currentChips) //Check if player is raising more than 0 and has enough to raise
                         {
@@ -451,7 +457,7 @@ namespace Poker_AI_Game
                         table.currentPot += player.currentChips;
                         table.highestBet = player.currentChips;
                         player.Bet(player.currentChips);
-                        player.allIn = true;                        
+                        player.allIn = true;
                     }
                         else
                         {
@@ -459,7 +465,7 @@ namespace Poker_AI_Game
                             //TakeRaiseAmount(player);
                         }
 
-                    
+
                 }
 
                 //Quit
@@ -524,6 +530,7 @@ namespace Poker_AI_Game
             int[] winningPlayers = evaluate.DecideWinner(ref players, ref table);
 
             Console.WriteLine("{0} won", winningPlayers[0]+1);
+            Console.WriteLine(winningPlayers.Length);
 
             if (winningPlayers.Length == 1)
             {
@@ -531,12 +538,17 @@ namespace Poker_AI_Game
             }
             else
             {
-                float potSplit = 1 / winningPlayers.Length;
+               // float potSplit = 1 / winningPlayers.Length;
+               if(table.currentPot % winningPlayers.Length > 0)
+                {
+                    Random rand = new Random();
+                    players[winningPlayers[rand.Next(0, winningPlayers.Length)]].currentChips += table.currentPot % winningPlayers.Length;
+                    table.currentPot -= table.currentPot % winningPlayers.Length;
+                }
 
                 for (int i = 0; i < winningPlayers.Length; i++)
                 {
-                    players[winningPlayers[i]].currentChips += (int)(table.currentPot * potSplit);
-                    
+                    players[winningPlayers[i]].currentChips += table.currentPot/ winningPlayers.Length;
                 }
             }
 
@@ -589,7 +601,7 @@ namespace Poker_AI_Game
 
             RemoveLosers();
         }
-        
+
         //Check the player isn't the only one with a hand left
         static bool OnlyPlayer()
         {

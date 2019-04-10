@@ -27,31 +27,46 @@ namespace Poker_AI_Game
                 Card[] allCards = new Card[onTable.Length + playerHand.Length]; // array that store the cards from the board and the player i hand
                 onTable.CopyTo(allCards, 0);
                 playerHand.CopyTo(allCards, onTable.Length);
+                //Ranks[] HighCards = new Ranks[3];
 
                 Console.Write(i+":");
-                if (CalculateGrade(allCards, 0) == true)
+                if (CalculateGrade(allCards, 0, players[i].highCards) == true)
                     players[i].grade = Grades.RoyalFlush;
-                else if (CalculateGrade(allCards, Grades.StraightFlush) == true)
+                else if (CalculateGrade(allCards, Grades.StraightFlush, players[i].highCards) == true)
                     players[i].grade = Grades.StraightFlush;
-                else if (CalculateGrade(allCards, Grades.FourOfAKind) == true)
+                else if (CalculateGrade(allCards, Grades.FourOfAKind, players[i].highCards) == true)
                     players[i].grade = Grades.FourOfAKind;
-                else if (CalculateGrade(allCards, Grades.FullHouse) == true)
+                else if (CalculateGrade(allCards, Grades.FullHouse, players[i].highCards) == true)
                     players[i].grade = Grades.FullHouse;
-                else if (CalculateGrade(allCards, Grades.Flush) == true)
+                else if (CalculateGrade(allCards, Grades.Flush, players[i].highCards) == true)
                     players[i].grade = Grades.Flush;
-                else if (CalculateGrade(allCards, Grades.Straight) == true)
+                else if (CalculateGrade(allCards, Grades.Straight, players[i].highCards) == true)
                     players[i].grade = Grades.Straight;
-                else if (CalculateGrade(allCards, Grades.ThreeOfAKind) == true)
+                else if (CalculateGrade(allCards, Grades.ThreeOfAKind, players[i].highCards) == true)
                     players[i].grade = Grades.ThreeOfAKind;
-                else if (CalculateGrade(allCards, Grades.TwoPairs) == true)
+                else if (CalculateGrade(allCards, Grades.TwoPairs, players[i].highCards) == true)
                     players[i].grade = Grades.TwoPairs;
-                else if (CalculateGrade(allCards, Grades.Pair) == true)
+                else if (CalculateGrade(allCards, Grades.Pair, players[i].highCards) == true)
+                {
                     players[i].grade = Grades.Pair;
+                    if(players[i].hand[0].rank < players[i].hand[1].rank)
+                    {
+                        players[i].highCards[1] = players[i].hand[0].rank;
+                    }
+                    else
+                    {
+                        players[i].highCards[1] = players[i].hand[1].rank;
+                    }
+                }
                 else
                 {
                     Console.WriteLine("High Card");
                     players[i].grade = Grades.HighCard;
                 }
+                //for(int j = 0; j < HighCards.Length; j++)
+                //{
+                //    players[i].highCards[j] = HighCards[j];
+                //}
             }
             Console.ReadKey();
             List<int> winners = new List<int>();
@@ -81,22 +96,81 @@ namespace Poker_AI_Game
             }
             else if (winners.Count > 1) //Multiple Potential Winners
             {
-                int highestCard = -1;
+                int repeat;
                 List<int> positionOfPlayer = new List<int>();
-
-                for (int i = 0; i < winners.Count; i++)
+                if (lowestGrade != 1 && lowestGrade != 5)
                 {
-                    int high = GetHighestCard(players[winners[i]].getPlayerHand());
+                    repeat = players[winners[0]].highCards.Count();
+                }
+                else
+                {
+                    repeat = 1;
+                }
+                bool removeNextPlayer = false;
+                for (int i = 0; i < winners.Count - 1; i++)
+                {
+                    for (int j = 0; j < repeat; j++)
+                    {
+                        if(winners.Count > 1)
+                        { 
+                            if (removeNextPlayer == true)
+                            {
+                                if(i != 0)
+                                    i--;
+                                removeNextPlayer = false;
+                            }
+                            Ranks high2 = players[winners[i + 1]].highCards[j];
+                            Ranks high1 = players[winners[i]].highCards[j];
 
-                    if (high > highestCard)
-                    {
-                        highestCard = high;
-                        positionOfPlayer.Clear();
-                        positionOfPlayer.Add(i);
-                    }
-                    else if (high == highestCard)
-                    {
-                        positionOfPlayer.Add(i);
+                            if (high1 > high2)
+                            {
+                                Console.WriteLine(winners.Count);
+                                for (int g = 0; g < winners.Count; g++)
+                                {
+                                    Console.WriteLine(winners[g]);
+                                }
+                                Console.WriteLine();
+                                winners.RemoveAt(i + 1);
+                                Console.WriteLine(winners.Count);
+                                for (int g = 0; g < winners.Count; g++)
+                                {
+                                    Console.WriteLine(winners[g]);
+                                }
+                                if (positionOfPlayer.Count != 0)
+                                {
+                                    positionOfPlayer.Clear();
+                                }
+                                positionOfPlayer.Add(i);
+                                removeNextPlayer = true;
+                            }
+                            else
+                            {
+                                if (high1 < high2)
+                                {
+
+                                    if (positionOfPlayer.Count != 0)
+                                    {
+                                        positionOfPlayer.Clear();
+                                    }
+                                    positionOfPlayer.Add(i + 1);
+                                }
+                                else
+                                {
+                                    if (high1 == high2 && (j + 1) == repeat)
+                                    {
+                                        if (positionOfPlayer.Count == 0)
+                                        {
+                                            positionOfPlayer.Add(i);
+                                            positionOfPlayer.Add(i + 1);
+                                        }
+                                        else
+                                        {
+                                            positionOfPlayer.Add(i + 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -115,6 +189,7 @@ namespace Poker_AI_Game
                     }
                     return data.ToArray();
                 }
+
             }
             else
             {
@@ -152,7 +227,7 @@ namespace Poker_AI_Game
             RoyalFlush, StraightFlush, FourOfAKind, FullHouse, Flush, Straight, ThreeOfAKind, TwoPairs, Pair, HighCard
         }
 
-        public bool CalculateGrade(Card[] allCards, Grades grade) {
+        public bool CalculateGrade(Card[] allCards, Grades grade, Ranks[] HighCards) {
 
             int grades = (int)grade;
             switch (grades){
@@ -211,7 +286,7 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count == 5)
                         {
-                            //Console.WriteLine("Royal Flush...............");
+                            Console.WriteLine("Royal Flush...............");
                             return true;
                         }
                     }
@@ -278,8 +353,8 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count >= 5)
                         {
-
-                            //Console.WriteLine("Straight flush...............");
+                            HighCards[0] = differentCards[0].rank;
+                            Console.WriteLine("Straight flush...............");
                             return true;
                         }
                     }
@@ -311,7 +386,7 @@ namespace Poker_AI_Game
                         }
                         if(fourOfAKind == true)
                         {
-                            //Console.WriteLine("Four Of A Kind...............");
+                            Console.WriteLine("Four Of A Kind...............");
                             return true;
                         }
                     }
@@ -343,12 +418,14 @@ namespace Poker_AI_Game
                                 }
                                 else
                                 {
+                                    HighCards[1] = allCardsList[i].rank;
                                     pair = true;
                                     countCard = 0;
                                 }
                             }
                             else
                             {
+                                HighCards[0] = allCardsList[i].rank;
                                 threeOfAKind = true;
                                 allCardsList.RemoveAt(position);
                                 countCard = 0;
@@ -358,7 +435,7 @@ namespace Poker_AI_Game
                         }
                         if (pair == true && threeOfAKind == true)
                         {
-                            //Console.WriteLine("Full House...............");
+                            Console.WriteLine("Full House...............");
                             return true;
                         }
                     }
@@ -369,6 +446,8 @@ namespace Poker_AI_Game
                     {
                         int countCard = 0;
                         bool flush = false;
+                        bool foundHighCards = false;
+                        HighCards[0] = allCards[0].rank;
                         for (int i = 0; i < 6; i++)
                         {
                             for (int j = i + 1; j < allCards.Length; j++)
@@ -377,7 +456,31 @@ namespace Poker_AI_Game
                                 {
                                     countCard++;
                                 }
+                                if (foundHighCards == false)
+                                {
+                                    if (HighCards[0] < allCards[j].rank)
+                                    {
+                                        HighCards[1] = HighCards[0];
+                                        HighCards[0] = allCards[j].rank;
+                                    }
+                                    else
+                                    {
+                                        if (HighCards[1] < allCards[j].rank)
+                                        {
+                                            HighCards[2] = HighCards[1];
+                                            HighCards[1] = allCards[j].rank;
+                                        }
+                                        else
+                                        {
+                                            if (HighCards[2] < allCards[j].rank)
+                                            {
+                                                HighCards[2] = allCards[j].rank;
+                                            }
+                                        }
+                                    }
+                                }
                             }
+                            foundHighCards = true;
                             if (countCard >= 4)
                             {
                                 flush = true;
@@ -391,7 +494,7 @@ namespace Poker_AI_Game
                         if (flush == true)
                         {
                           
-                            //Console.WriteLine("Flush...............");
+                            Console.WriteLine("Flush...............");
                             return true;
                         }
                     }
@@ -412,9 +515,16 @@ namespace Poker_AI_Game
                                 if (differentCards.Count == 0)
                                 {
                                     differentCards.Add(currentCard);
-                                    if (currentCard.rank == nextCard.rank + 1)
+                                    if (currentCard.rank == nextCard.rank + 1 || (currentCard.rank == Ranks.Ten && descendedAllCards[descendedAllCards.Count - 1].rank == Ranks.Ace && differentCards.Count == 4))
                                     {
-                                        differentCards.Add(nextCard);
+                                        if (currentCard.rank == Ranks.Ten)
+                                        {
+                                            differentCards.Add(descendedAllCards[descendedAllCards.Count - 1]);
+                                        }
+                                        else
+                                        {
+                                            differentCards.Add(nextCard);
+                                        }
                                     }
                                     else
                                     {
@@ -430,9 +540,16 @@ namespace Poker_AI_Game
                                 {
                                     if (differentCards.Count < 5)
                                     {
-                                        if (currentCard.rank == nextCard.rank + 1)
+                                        if (currentCard.rank == nextCard.rank + 1 || (currentCard.rank == Ranks.Ten && descendedAllCards[descendedAllCards.Count - 1].rank == Ranks.Ace && differentCards.Count == 4))
                                         {
-                                            differentCards.Add(nextCard);
+                                            if (currentCard.rank == Ranks.Ten)
+                                            {
+                                                differentCards.Add(descendedAllCards[descendedAllCards.Count - 1]);
+                                            }
+                                            else
+                                            {
+                                                differentCards.Add(nextCard);
+                                            }
                                         }
                                         else
                                         {
@@ -458,8 +575,8 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count >= 5)
                         {
-
-                            //Console.WriteLine("Straight...............");
+                            HighCards[0] = differentCards[0].rank;
+                            Console.WriteLine("Straight...............");
                             return true;
                         }
                     }
@@ -485,13 +602,18 @@ namespace Poker_AI_Game
                             }
                             else
                             {
+                                HighCards[0]=allCards[i].rank;
                                 threeOfAKind = true;
                             }
-
+                            if(HighCards[1] < allCards[i].rank && allCards[i].rank!= HighCards[0])
+                            {
+                                HighCards[1] = allCards[i].rank;
+                            }
                         }
                         if (threeOfAKind == true)
                         {
-                            //Console.WriteLine("Three Of A Kind...............");
+
+                            Console.WriteLine("Three Of A Kind...............");
                             return true;
                         }
                     }
@@ -509,19 +631,42 @@ namespace Poker_AI_Game
                                 if (allCards[i].rank == allCards[j].rank)
                                 {
                                     countPairs++;
+                                    if(HighCards[0] == HighCards[1])
+                                    {
+                                        HighCards[0] = allCards[i].rank;
+                                    }
+                                    else
+                                    {
+                                        if (HighCards[0] < allCards[i].rank)
+                                        {
+                                            HighCards[1] = HighCards[0];
+                                            HighCards[0] = allCards[j].rank;
+                                        }
+                                        else
+                                        {
+                                            if (HighCards[1] < allCards[j].rank)
+                                            {
+                                                HighCards[1] = allCards[j].rank;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (allCards[i].rank > HighCards[2] && HighCards[0] != allCards[i].rank && HighCards[1] != allCards[i].rank)
+                                {
+                                    HighCards[2] = allCards[j].rank;
                                 }
                                 
                             }
                             if(countPairs >= 2)
                             {
-                                //Console.WriteLine("Two pair...............");
+                                Console.WriteLine("Two pair...............");
                                 return true;
                             }
 
                         }
                         if (countPairs >= 2)
                         {
-                            //Console.WriteLine("Two pair...............");
+                            Console.WriteLine("Two pair...............");
                             return true;
                         }
                     }
@@ -539,13 +684,14 @@ namespace Poker_AI_Game
                                 if (allCards[i].rank == allCards[j].rank)
                                 {
                                     countCard++;
+                                    HighCards[0] = allCards[i].rank;
                                 }
                             }
 
                         }
                         if (countCard >= 1)
                         {
-                            //Console.WriteLine("Pair...............");
+                            Console.WriteLine("Pair...............");
                             return true;
                         }
                     }
