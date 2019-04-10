@@ -30,23 +30,23 @@ namespace Poker_AI_Game
                 //Ranks[] HighCards = new Ranks[3];
 
                 Console.Write(i+":");
-                if (CalculateGrade(allCards, 0, players[i].highCards) == true)
+                if (CalculateGrade(allCards, 0, players[i].highCards, false) == true)
                     players[i].grade = Grades.RoyalFlush;
-                else if (CalculateGrade(allCards, Grades.StraightFlush, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.StraightFlush, players[i].highCards, false) == true)
                     players[i].grade = Grades.StraightFlush;
-                else if (CalculateGrade(allCards, Grades.FourOfAKind, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.FourOfAKind, players[i].highCards, false) == true)
                     players[i].grade = Grades.FourOfAKind;
-                else if (CalculateGrade(allCards, Grades.FullHouse, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.FullHouse, players[i].highCards, false) == true)
                     players[i].grade = Grades.FullHouse;
-                else if (CalculateGrade(allCards, Grades.Flush, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.Flush, players[i].highCards, false) == true)
                     players[i].grade = Grades.Flush;
-                else if (CalculateGrade(allCards, Grades.Straight, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.Straight, players[i].highCards, false) == true)
                     players[i].grade = Grades.Straight;
-                else if (CalculateGrade(allCards, Grades.ThreeOfAKind, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.ThreeOfAKind, players[i].highCards, false) == true)
                     players[i].grade = Grades.ThreeOfAKind;
-                else if (CalculateGrade(allCards, Grades.TwoPairs, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.TwoPairs, players[i].highCards, false) == true)
                     players[i].grade = Grades.TwoPairs;
-                else if (CalculateGrade(allCards, Grades.Pair, players[i].highCards) == true)
+                else if (CalculateGrade(allCards, Grades.Pair, players[i].highCards, false) == true)
                 {
                     players[i].grade = Grades.Pair;
                     if(players[i].hand[0].rank < players[i].hand[1].rank)
@@ -227,7 +227,7 @@ namespace Poker_AI_Game
             RoyalFlush, StraightFlush, FourOfAKind, FullHouse, Flush, Straight, ThreeOfAKind, TwoPairs, Pair, HighCard
         }
 
-        public bool CalculateGrade(Card[] allCards, Grades grade, Ranks[] HighCards) {
+        public bool CalculateGrade(Card[] allCards, Grades grade, Ranks[] HighCards, bool Sim) {
 
             int grades = (int)grade;
             switch (grades){
@@ -286,7 +286,7 @@ namespace Poker_AI_Game
                         }
                         if (differentCards.Count == 5)
                         {
-                            Console.WriteLine("Royal Flush...............");
+                            if(!Sim) Console.WriteLine("Royal Flush...............");
                             return true;
                         }
                     }
@@ -354,7 +354,7 @@ namespace Poker_AI_Game
                         if (differentCards.Count >= 5)
                         {
                             HighCards[0] = differentCards[0].rank;
-                            Console.WriteLine("Straight flush...............");
+                            if (!Sim) Console.WriteLine("Straight flush...............");
                             return true;
                         }
                     }
@@ -386,7 +386,7 @@ namespace Poker_AI_Game
                         }
                         if(fourOfAKind == true)
                         {
-                            Console.WriteLine("Four Of A Kind...............");
+                            if (!Sim) Console.WriteLine("Four Of A Kind...............");
                             return true;
                         }
                     }
@@ -435,7 +435,7 @@ namespace Poker_AI_Game
                         }
                         if (pair == true && threeOfAKind == true)
                         {
-                            Console.WriteLine("Full House...............");
+                            if (!Sim) Console.WriteLine("Full House...............");
                             return true;
                         }
                     }
@@ -493,8 +493,8 @@ namespace Poker_AI_Game
                         }
                         if (flush == true)
                         {
-                          
-                            Console.WriteLine("Flush...............");
+
+                            if (!Sim) Console.WriteLine("Flush...............");
                             return true;
                         }
                     }
@@ -576,7 +576,7 @@ namespace Poker_AI_Game
                         if (differentCards.Count >= 5)
                         {
                             HighCards[0] = differentCards[0].rank;
-                            Console.WriteLine("Straight...............");
+                            if (!Sim) Console.WriteLine("Straight...............");
                             return true;
                         }
                     }
@@ -613,7 +613,7 @@ namespace Poker_AI_Game
                         if (threeOfAKind == true)
                         {
 
-                            Console.WriteLine("Three Of A Kind...............");
+                            if (!Sim) Console.WriteLine("Three Of A Kind...............");
                             return true;
                         }
                     }
@@ -659,14 +659,14 @@ namespace Poker_AI_Game
                             }
                             if(countPairs >= 2)
                             {
-                                Console.WriteLine("Two pair...............");
+                                if (!Sim) Console.WriteLine("Two pair...............");
                                 return true;
                             }
 
                         }
                         if (countPairs >= 2)
                         {
-                            Console.WriteLine("Two pair...............");
+                            if (!Sim) Console.WriteLine("Two pair...............");
                             return true;
                         }
                     }
@@ -691,7 +691,7 @@ namespace Poker_AI_Game
                         }
                         if (countCard >= 1)
                         {
-                            Console.WriteLine("Pair...............");
+                            if (!Sim) Console.WriteLine("Pair...............");
                             return true;
                         }
                     }
