@@ -77,16 +77,20 @@ namespace Poker_AI_Game
 
             for (int i = 0; i < players.Count; i++)
             {
-                if ((int)players[i].grade < lowestGrade)
+                if (players[i].inRound)
                 {
-                    winners.Clear();
-                    winners.Add(i);
-                    lowestGrade = (int)players[i].grade;
+                    if ((int)players[i].grade < lowestGrade)
+                    {
+                        winners.Clear();
+                        winners.Add(i);
+                        lowestGrade = (int)players[i].grade;
+                    }
+                    else if ((int)players[i].grade == lowestGrade)
+                    {
+                        winners.Add(i);
+                    }
                 }
-                else if ((int)players[i].grade == lowestGrade)
-                {
-                    winners.Add(i);
-                }
+                
             }
 
             //Check for highest card
@@ -605,10 +609,11 @@ namespace Poker_AI_Game
                                 HighCards[0]=allCards[i].rank;
                                 threeOfAKind = true;
                             }
+                            /*
                             if(HighCards[1] < allCards[i].rank && allCards[i].rank!= HighCards[0])
                             {
                                 HighCards[1] = allCards[i].rank;
-                            }
+                            }*/
                         }
                         if (threeOfAKind == true)
                         {
@@ -620,7 +625,7 @@ namespace Poker_AI_Game
 
                     break;
                 case 7: // Two pair
-                    if (allCards.Length > 4)
+                    if (allCards.Length >= 4)
                     {
                         List<Card> allCardsList = allCards.ToList();
                         int countPairs = 0;
@@ -673,7 +678,7 @@ namespace Poker_AI_Game
 
                     break;
                 case 8: // Pair
-                    if (allCards.Length > 4)
+                    if (allCards.Length >= 3)
                     {
                         List<Card> differentCards = new List<Card>();
                         int countCard = 0;               

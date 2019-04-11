@@ -217,6 +217,50 @@ namespace Poker_AI_Game
             potOdds = ValueOfPot / CostToPlay;
         }
 
+        bool[] EvaluateTable(Table table)
+        {
+            //needs to take in cards from river, order them, compare them to winstates
+            // then it will need to return an array of booleans which state if there are pairs, threes, etc present 
+            //eg [false(pairs), true(threes), false(x)]
+            //for 5 cards:p, 2p, 3oak, 4oak, straight, flush, straightflush
+            //p,2p,3oak,4oak,straight,flush,straightflush
+            bool[] RiverCombination = new bool[] { false, false, false, false, false, false, false, false, false, false };
+            Evaluate eval = new Evaluate();
+            //take in river.
+            List<Card> River = table.GetTable();
+            //compare differently depending on length of list
+            switch (River.Count)
+            {
+                case 3:
+                    //check for pair, 3oak
+
+                    //if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.ThreeOfAKind, highCards, true)) { RiverCombination.SetValue(true, 6); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.Pair, highCards, true)) { RiverCombination.SetValue(true, 8); }
+                    break;
+                case 4:
+                    //4oak, 3oak,2p,p
+                    //if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.FourOfAKind, highCards, true)) { RiverCombination.SetValue(true, 2); }
+                    //if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.ThreeOfAKind, highCards, true)) { RiverCombination.SetValue(true, 6); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.TwoPairs, highCards, true)) { RiverCombination.SetValue(true, 7); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.Pair, highCards, true)) { RiverCombination.SetValue(true, 8); }
+                    break;
+                case 5:
+                    //sf,f,s,4oak,3oak,2p,p
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.StraightFlush, highCards, true)) { RiverCombination.SetValue(true, 1); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.Flush, highCards, true)) { RiverCombination.SetValue(true, 4); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.Straight, highCards, true)) { RiverCombination.SetValue(true, 5); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.FourOfAKind, highCards, true)) { RiverCombination.SetValue(true, 2); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.ThreeOfAKind, highCards, true)) { RiverCombination.SetValue(true, 6); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.TwoPairs, highCards, true)) { RiverCombination.SetValue(true, 7); }
+                    if (eval.CalculateGrade(River.ToArray(), Evaluate.Grades.Pair, highCards, true)) { RiverCombination.SetValue(true, 8); }
+                    break;
+            }
+
+            if (RiverCombination[6] && RiverCombination[8]) RiverCombination[3] = true; //If Pair and 3OAK then Full house
+
+            return RiverCombination;
+        }
+
         /*public void WorkOutHandOuts(Table table)
         {
             int outs = 0;
@@ -323,10 +367,12 @@ namespace Poker_AI_Game
                 simHand.Clear();
             }
 
+            bool[] tableCards = EvaluateTable(table);
             for (int i = 0; i < 10; i++)
             {
                 value[i] = (float)Probs[i] / (float)iterate;
                 value[i] *= 100;
+                if (tableCards[i]) value[i] = 0;
             }
 
             //DEBUG//

@@ -84,6 +84,7 @@ namespace Poker_AI_Game
             {
                 //Start of the game, players bet then flip 3
                 case 0:
+                    if (OnlyPlayer()) Main(null);
                     BetBlinds();
                     DealCardsToAllPlayers();
                     UserAction();
@@ -530,7 +531,7 @@ namespace Poker_AI_Game
             int[] winningPlayers = evaluate.DecideWinner(ref players, ref table);
 
             Console.WriteLine("{0} won", winningPlayers[0]+1);
-            Console.WriteLine(winningPlayers.Length);
+            //Console.WriteLine(winningPlayers.Length);
 
             if (winningPlayers.Length == 1)
             {
