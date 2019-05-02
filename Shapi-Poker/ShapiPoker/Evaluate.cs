@@ -128,17 +128,17 @@ namespace Poker_AI_Game
 
                             if (high1 > high2)
                             {
-                                Console.WriteLine(winners.Count);
+                                //Console.WriteLine(winners.Count);
                                 for (int g = 0; g < winners.Count; g++)
                                 {
-                                    Console.WriteLine(winners[g]);
+                                    //Console.WriteLine(winners[g]);
                                 }
                                 Console.WriteLine();
                                 winners.RemoveAt(i + 1);
-                                Console.WriteLine(winners.Count);
+                                //Console.WriteLine(winners.Count);
                                 for (int g = 0; g < winners.Count; g++)
                                 {
-                                    Console.WriteLine(winners[g]);
+                                    //Console.WriteLine(winners[g]);
                                 }
                                 if (positionOfPlayer.Count != 0)
                                 {
@@ -606,7 +606,14 @@ namespace Poker_AI_Game
                             }
                             else
                             {
-                                HighCards[0]=allCards[i].rank;
+                                try
+                                {
+                                    HighCards[0] = allCards[i].rank;
+                                }
+                                catch (Exception e)
+                                {
+                                }
+                                
                                 threeOfAKind = true;
                             }
                             /*

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Poker_AI_Game
 {
@@ -14,13 +15,29 @@ namespace Poker_AI_Game
         private float percievedScore = 0;
 
         private int chipsAtStartOfRound;
-
+        private int roundChipDelta;
+        private int totalChipDelta = 0;
+        
         private float potOdds;
         double[] value = new double[10];
 
         private int raiseNumber = 0;
-        float[] weights = new float[4];
-        int raiseAmount = 5;
+        //float[] weights = new float[4];
+
+        private double[] wA = new double[3];
+        private double[] wP = new double[3];
+
+        private double[] O = new double[3];
+        private double[] wO = new double[2];
+
+        private float playerConfidence = 0;
+
+        /*
+        private double[] wWS = new double[3];
+        private double[] wDC = new double[3];
+        */
+
+        float raiseAmount = 5;
 
         int VPIP = 0;
         List<int> PFRs = new List<int>();
@@ -32,12 +49,65 @@ namespace Poker_AI_Game
             playerID = ID;
             currentChips = startingChips;
             chipsAtStartOfRound = currentChips;
+            initWeights();
+        }
+
+        private void initWeights()
+        {
+            Random r = new Random();
+            for (int i = 0; i < 3; i++)
+            {
+                wA[i] = (r.NextDouble());
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                wP[i] = r.NextDouble();
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                wO[i] = r.NextDouble();
+            }
         }
 
         public void DeltaChips() //Works out betting score based on chips gained/lost at the end of a round
         {
-            int chipDelta = 5;
-            chipDelta += currentChips - chipsAtStartOfRound; //Gains 5 chips -> 105-100 = 5
+            int wChipDelta = 0;
+            roundChipDelta = wChipDelta + currentChips - chipsAtStartOfRound; //Gains 5 chips -> 105-100 = 5
+            totalChipDelta += roundChipDelta;
+        }
+
+        public void EvaluatePerformance(int winner)
+        {
+            //Winstreak and deltaChips.
+            raiseNumber = 0;
+            float raiseDelta = (float)(chipsAtStartOfRound / roundChipDelta) / 1000;
+            if (winner == 0) //AI won
+            {
+                raiseAmount += raiseDelta;
+                changeWeights(-0.2f);
+            }
+            else
+            {
+                playerConfidence /= 2;
+                raiseAmount += raiseDelta;
+                changeWeights(0.2f);
+            }
+        }
+
+        private void changeWeights(float delta)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                wA[i] += delta;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                wP[i] += delta;
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                wO[i] += delta;
+            }
         }
 
         public void ScorePreFlopHand()
@@ -144,7 +214,7 @@ namespace Poker_AI_Game
         {
             if (VPIP > 0) Tendencies.Add(Tuple.Create(VPIP, PFRs.Sum()));
         }
-
+        /*
         public void ExaminePlayerType(List<Player> players, int gamesPlayed)
         {
             if (Tendencies.Count > 0)
@@ -201,7 +271,7 @@ namespace Poker_AI_Game
             else handConfidence -= 0.03f;
             percievedScore = score * handConfidence;
         }
-
+        */
         public void WorkOutOddsForPot(Table table)
         {
 
@@ -387,7 +457,7 @@ namespace Poker_AI_Game
             Console.WriteLine("{0}% chance of getting four of a kind", value[2]);
             Console.WriteLine("{0}% chance of getting a straight flush", value[1]);
             Console.WriteLine("{0}% chance of getting a royal flush", value[0]);
-            Console.ReadLine();
+            Console.ReadKey();
             for (int i = 0; i < 10; i++)
             {
                 handConfidence += (10-i) * (float) value[i];
@@ -396,7 +466,7 @@ namespace Poker_AI_Game
 
         }
 
-        public char Play()
+        public char Play(int amountToCall, Player player)
         {
             char ans;
 
@@ -405,7 +475,7 @@ namespace Poker_AI_Game
             bool stop = false;
             do
             {
-                if (value[checking] > 60)
+                if (value[checking] > 60) //Checks for highest card at least 60%. High Card is always 100%
                 {
                     stop = true;
                 }
@@ -413,7 +483,9 @@ namespace Poker_AI_Game
             } while (!stop);
             checking = 9 - checking;
             tScore += checking * score;
+            double output = ANN(9-checking,value[9-checking]);
 
+            /*
             if (value[8] < 0.2) tScore = -10;
 
 
@@ -432,6 +504,28 @@ namespace Poker_AI_Game
                 ans = 'f';
                 raiseNumber = 0;
             }
+            */
+
+            if (output > 0.8)
+            {
+                ans = 'r';
+                raiseNumber++;
+            } else if (output > 0.3)
+            {
+                playerConfidence += 5*((float)(amountToCall-blindPaid) / (float)player.currentChips);
+                float temp = (float) (10*handConfidence) * (float) (raiseAmount) * winstreak;
+                //temp *= playerConfidence;
+                if (amountToCall*playerConfidence < temp)
+                {
+                    ans = 'c';
+                } else ans = 'f';
+
+            }
+            else
+            {
+                ans = 'f';
+            }
+            
 
             //If PotOdds > OddsToWin, Raise
 
@@ -441,7 +535,7 @@ namespace Poker_AI_Game
         public int GetRaiseAmount(int amountToCall)
         {
             float amountToRaise = amountToCall;
-            amountToRaise += (float)(1/handConfidence) * (float) raiseAmount * winstreak;
+            amountToRaise += (float)(10*handConfidence) * (float) raiseAmount * winstreak; // (1/handConfidence)
 
             return (int) Math.Round(amountToRaise);
         }
@@ -450,15 +544,17 @@ namespace Poker_AI_Game
         {
             if (win)
             {
-                winstreak = winstreak + (float) 0.1;
+                winstreak = winstreak + (float) 0.5;
             }
             else if (winstreak > 0)
             {
-                winstreak = winstreak - (float) 0.1;
+                winstreak = winstreak - (float) 0.5;
             }
+
+            if (winstreak <= 0) winstreak = 0.1f;
         }
 
-        public void ANN(int Attractiveness, double Probability)
+        public double ANN(int AttractivenessInit, double Probability)
         {
             //          A           P
             //             \      /
@@ -466,7 +562,7 @@ namespace Poker_AI_Game
             //               |  |
             //               C  O
             //////////////////////////////////////////
-            //      Win State + DeltaChips
+            //      Win State + DeltaChips          //
             //////////////////////////////////////////
             //                O
             //              /   \
@@ -477,7 +573,24 @@ namespace Poker_AI_Game
             //Attr * AttrWeight + Prob * ProbWeight = Output
             //Output = move (check, raise, fold)
             //Win state and DeltaChips (change in chips) -> Win/Lose conditional branches. Branches affect weights
+            Probability = Probability / 100;
+            float Attractiveness = ((float)AttractivenessInit / 10);
+            //double output = (Attractiveness * wA) + (Probability * wP);
+            for (int i = 0; i < 3; i++)
+            {
+                O[i] = (Attractiveness * wA[i]) + (Probability * wP[i]);
+            }
 
+            double output = 0;
+            for (int i = 0; i < 2; i++)
+            {
+                output += (O[i] * wO[i]);
+            }
+            Console.WriteLine(output);
+            output -= (float) raiseNumber / 2;
+            Console.WriteLine(output);
+            Console.ReadKey();
+            return output;
 
         }
 

@@ -20,6 +20,8 @@ namespace Poker_AI_Game
         static bool gameActive = true;
         static int gamePhase = 0;
         static int button = 0;
+        private static int blind = 20;
+        private static int pChips = 10000;
 
         //Main code chain
         static void Main(string[] args)
@@ -39,8 +41,8 @@ namespace Poker_AI_Game
                 }
                 else if (ans == 2)
                 {
-                    players.Add(Ai = new AI(1, 100));
-                    players.Add(new Player (2, 100));
+                    players.Add(Ai = new AI(1, pChips));
+                    players.Add(new Player (2, pChips));
                     while (gameActive)
                     {
                         DecipherPhase();
@@ -71,10 +73,10 @@ namespace Poker_AI_Game
         static void PopulatePlayers()
         {
             //Temp Adding player 1 and 2
-            players.Add(new Player(1, 100));
-            players.Add(new Player(2, 100));
-            players.Add(new Player(3, 100));
-            players.Add(new Player(4, 100));
+            players.Add(new Player(1, pChips));
+            players.Add(new Player(2, pChips));
+            players.Add(new Player(3, pChips));
+            players.Add(new Player(4, pChips));
         }
 
         //Actions are taken depending on phase of game
@@ -149,8 +151,6 @@ namespace Poker_AI_Game
         {
             CycleButton();
 
-            int blind = 1;
-
             // SmallBlind has enough money to bet blind
             if (players[button].currentChips > blind)
             {
@@ -187,7 +187,7 @@ namespace Poker_AI_Game
                 table.currentPot += players[button + 1].currentBet;
                 table.highestBet = players[button + 1].currentBet;
             }
-            //Console.ReadKey();
+            Console.ReadKey();
             button++;
         }
 
@@ -240,7 +240,7 @@ namespace Poker_AI_Game
                         {
                             Ai.SimulateHands(table);
                             Ai.ScorePreFlopHand();
-                            PlayTurn(players[tButton], Ai.Play());
+                            PlayTurn(players[tButton], Ai.Play(table.highestBet - players[0].currentBet, players[1]));
 
                         }
                         else CalculateOptions(players[tButton]);
@@ -253,7 +253,7 @@ namespace Poker_AI_Game
 
                 foreach (Player p in players)
                 {
-                    if (p.blindPaid == 2 && p.checking)
+                    if (p.blindPaid == 2*blind && p.checking)
                     {
                         play = false;
                     }
@@ -557,6 +557,7 @@ namespace Poker_AI_Game
             if (players[0] is AI)
             {
                 Ai.DeltaChips();
+                Ai.EvaluatePerformance(winningPlayers[0]);
                 players[0] = Ai;
                 if (players[winningPlayers[0]] is AI)
                 {
